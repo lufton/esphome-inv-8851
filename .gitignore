@@ -1,0 +1,6 @@
+/.esphome/
+/.vscode/
+/components/inv_8851/esphome/
+/secrets.yaml
+*.pyc
+__pycache__

@@ -1,0 +1,14 @@
+substitutions:
+  name: dtu-wbs1-v001
+  friendly_name: DTU WBS1-V001
+  uart_tx_pin: GPIO4
+  uart_rx_pin: GPIO5
+
+esp32:
+  board: esp32-c3-devkitm-1
+
+packages:
+  common: !include common.yaml
+  uart: !include packages/uart.yaml
+  dtu_wbs1_v001: !include packages/dtu_wbs1_v001.yaml
+  inv_8851: !include packages/inv_8851.yaml

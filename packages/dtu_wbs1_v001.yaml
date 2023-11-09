@@ -1,0 +1,91 @@
+esphome:
+  on_boot:
+    then:
+      - light.turn_on: pow_green_led
+
+globals:
+  - id: updating_ota
+    type: bool
+    initial_value: 'false'
+
+ota:
+  on_begin:
+    - globals.set:
+        id: updating_ota
+        value: 'true'
+    - light.turn_off: pow_green_led
+    - while:
+        condition:
+          lambda: return id(updating_ota);
+        then:
+          - light.turn_on: pow_red_led
+          - delay: 200ms
+          - light.turn_off: pow_red_led
+          - delay: 200ms
+    - light.turn_on: pow_green_led
+  on_end:
+    - globals.set:
+        id: updating_ota
+        value: 'false'
+
+interval:
+  - interval: 1s
+    then:
+      - if:
+          condition: wifi.connected
+          then:
+            if:
+              condition:
+                - light.is_off: net_led
+              then:
+                - light.turn_on: net_led
+          else:
+            - light.turn_on: net_led
+            - delay: 500ms
+            - light.turn_off: net_led
+
+uart:
+  - id: !extend inv_8851_uart
+    debug:
+      sequence:
+        - script.execute: blink_comm_led
+
+script:
+  - id: blink_comm_led
+    mode: restart
+    then:
+      - light.turn_on: comm_led
+      - delay: 200ms
+      - light.turn_off: comm_led
+  - id: blink_update_ota_led
+    mode: single
+    then:
+
+
+output:
+  - platform: gpio
+    id: comm_led_output
+    pin: GPIO18
+  - platform: gpio
+    id: net_led_output
+    pin: GPIO1
+  - platform: gpio
+    id: pow_green_led_output
+    pin: GPIO0
+  - platform: gpio
+    id: pow_red_led_output
+    pin: GPIO3
+
+light:
+  - platform: binary
+    id: comm_led
+    output: comm_led_output
+  - platform: binary
+    id: net_led
+    output: net_led_output
+  - platform: binary
+    id: pow_green_led
+    output: pow_green_led_output
+  - platform: binary
+    id: pow_red_led
+    output: pow_red_led_output
