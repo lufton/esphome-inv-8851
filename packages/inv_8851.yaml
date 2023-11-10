@@ -28,8 +28,6 @@ sensor:
   - platform: inv_8851
     battery_charge_current:
       name: "Battery charge current"
-    battery_type:
-      name: "Battery type"
     battery_voltage:
       name: "Battery voltage"
     bms_battery_current:
@@ -128,3 +126,82 @@ sensor:
       name: "PV power"
     pv_voltage:
       name: "PV voltage"
+
+select:
+  - platform: inv_8851
+    auto_return:
+      name: "Auto return"
+    backlight:
+      name: "Backlight"
+    battery_equalization:
+      name: "Battery equalization"
+    battery_type:
+      name: "Battery type"
+    buzzer:
+      name: "Buzzer"
+    charge_energy_priority:
+      name: "Charge energy priority"
+    fault_record:
+      name: "Fault record"
+    frequency:
+      name: "Frequency"
+    grid_voltage_range:
+      name: "Grid voltage range"
+    on_grid:
+      name: "On grid"
+    output_energy_priority:
+      name: "Output energy priority"
+    overload_restart:
+      name: "Overload restart"
+    overtemp_restart:
+      name: "Overtemp restart"
+    parallel_operation:
+      name: "Parallel operation"
+    phase:
+      name: "Phase"
+    power_buzzer:
+      name: "Power buzzer"
+    powersave_mode:
+      name: "Powersave mode"
+
+number:
+  - platform: inv_8851
+    battery_back_to_util_voltage:
+      name: "Battery back to util voltage"
+      mode: box
+    battery_bulk_voltage:
+      name: "Battery bulk voltage"
+      mode: box
+    battery_float_voltage:
+      name: "Battery float voltage"
+      mode: box
+    battery_charge_cut_off_current:
+      name: "Battery charge cut-off current"
+      mode: box
+    battery_cut_off_voltage:
+      name: "Battery cut-off voltage"
+      mode: box
+    battery_equalization_interval:
+      name: "Battery equalization interval"
+      mode: box
+    battery_equalization_time:
+      name: "Battery equalization time"
+      mode: box
+    battery_equalization_timeout:
+      name: "Battery equalization timeout"
+      mode: box
+    battery_equalization_voltage:
+      name: "Battery equalization voltage"
+      mode: box
+    output_frequency:
+      name: "Output frequency"
+      mode: box
+    output_voltage:
+      name: "Output voltage"
+      mode: box
+    total_charge_current:
+      name: "Total charge current"
+      mode: box
+    util_charge_current:
+      name: "Util charge current"
+      mode: box

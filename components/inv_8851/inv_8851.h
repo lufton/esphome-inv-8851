@@ -3,21 +3,42 @@
 #include "inv8851.h"
 #include "esphome/core/component.h"
 #include "esphome/components/uart/uart.h"
+
+#ifdef USE_BINARY_SENSOR
+#include "esphome/components/binary_sensor/binary_sensor.h"
+#endif
 #ifdef USE_SENSOR
 #include "esphome/components/sensor/sensor.h"
 #endif
-#ifdef USE_BINARY_SENSOR
-#include "esphome/components/binary_sensor/binary_sensor.h"
+#ifdef USE_SELECT
+#include "esphome/components/select/select.h"
+#endif
+#ifdef USE_NUMBER
+#include "esphome/components/number/number.h"
 #endif
 
 namespace esphome {
 namespace inv_8851 {
 
-class INV_8851 : public PollingComponent, public uart::UARTDevice {
+static const char *const TAG = "inv_8851";
+
+class Inv8851 : public PollingComponent, public uart::UARTDevice {
  public:
+   #ifdef USE_BINARY_SENSOR
+    SUB_BINARY_SENSOR(battery_charging)
+    SUB_BINARY_SENSOR(battery_connected)
+    SUB_BINARY_SENSOR(bus_problem)
+    SUB_BINARY_SENSOR(float_charging)
+    SUB_BINARY_SENSOR(grid_pll_problem)
+    SUB_BINARY_SENSOR(grid_power)
+    SUB_BINARY_SENSOR(parallel_lock_phase_problem)
+    SUB_BINARY_SENSOR(pv_excess)
+    SUB_BINARY_SENSOR(pv_input_problem)
+    SUB_BINARY_SENSOR(system_power)
+  #endif
+
   #ifdef USE_SENSOR
     SUB_SENSOR(battery_charge_current)
-    SUB_SENSOR(battery_type)
     SUB_SENSOR(battery_voltage)
     SUB_SENSOR(bms_battery_current)
     SUB_SENSOR(bms_battery_soc)
@@ -68,17 +89,41 @@ class INV_8851 : public PollingComponent, public uart::UARTDevice {
     SUB_SENSOR(pv_power)
     SUB_SENSOR(pv_voltage)
   #endif
-  #ifdef USE_BINARY_SENSOR
-    SUB_BINARY_SENSOR(battery_charging)
-    SUB_BINARY_SENSOR(battery_connected)
-    SUB_BINARY_SENSOR(bus_problem)
-    SUB_BINARY_SENSOR(float_charging)
-    SUB_BINARY_SENSOR(grid_pll_problem)
-    SUB_BINARY_SENSOR(grid_power)
-    SUB_BINARY_SENSOR(parallel_lock_phase_problem)
-    SUB_BINARY_SENSOR(pv_excess)
-    SUB_BINARY_SENSOR(pv_input_problem)
-    SUB_BINARY_SENSOR(system_power)
+
+  #ifdef USE_SELECT
+    SUB_SELECT(auto_return)
+    SUB_SELECT(backlight)
+    SUB_SELECT(battery_equalization)
+    SUB_SELECT(battery_type)
+    SUB_SELECT(buzzer)
+    SUB_SELECT(charge_energy_priority)
+    SUB_SELECT(fault_record)
+    SUB_SELECT(frequency)
+    SUB_SELECT(grid_voltage_range)
+    SUB_SELECT(on_grid)
+    SUB_SELECT(output_energy_priority)
+    SUB_SELECT(overload_restart)
+    SUB_SELECT(overtemp_restart)
+    SUB_SELECT(parallel_operation)
+    SUB_SELECT(phase)
+    SUB_SELECT(power_buzzer)
+    SUB_SELECT(powersave_mode)
+  #endif
+
+  #ifdef USE_NUMBER
+    SUB_NUMBER(battery_back_to_util_voltage)
+    SUB_NUMBER(battery_bulk_voltage)
+    SUB_NUMBER(battery_float_voltage)
+    SUB_NUMBER(battery_charge_cut_off_current)
+    SUB_NUMBER(battery_cut_off_voltage)
+    SUB_NUMBER(battery_equalization_interval)
+    SUB_NUMBER(battery_equalization_time)
+    SUB_NUMBER(battery_equalization_timeout)
+    SUB_NUMBER(battery_equalization_voltage)
+    SUB_NUMBER(output_frequency)
+    SUB_NUMBER(output_voltage)
+    SUB_NUMBER(total_charge_current)
+    SUB_NUMBER(util_charge_current)
   #endif
 
   void setup() override;
@@ -88,6 +133,10 @@ class INV_8851 : public PollingComponent, public uart::UARTDevice {
   void update() override;
 
   void dump_config() override;
+
+  void set_select_value(const std::string type, size_t index);
+  
+  void set_number_value(const std::string type, float value);
 
  protected:
   #define PUBLISH_STATE(entity, state) \
@@ -101,18 +150,16 @@ class INV_8851 : public PollingComponent, public uart::UARTDevice {
   
   void request_config_();
 
-  void publish_state_();
+  void publish_state_(const uint8_t *resp);
   
-  void publish_config_();
+  void publish_config_(const uint8_t *resp);
 
-  inv8851_state_s *state_;
-
-  inv8851_config_s *config_;
+  inv8851_config_s config_;
 
   bool state_update_ = true;
 
   uint32_t last_read_{0};
 };
 
-}  // namespace dtu_wbs1
+}  // namespace inv_8851
 }  // namespace esphome

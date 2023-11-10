@@ -11,7 +11,9 @@ from esphome.const import (
 
 from . import CONF_INV_8851_ID, INV_8851
 
-DEPENDENCIES = ["uart"]
+DEPENDENCIES = ["inv_8851"]
+
+CODEOWNERS = ["@lufton"]
 
 CONF_BATTERY_CONNECTED = "battery_connected"
 CONF_BATTERY_CHARGING = "battery_charging"
@@ -65,5 +67,5 @@ async def to_code(config):
     parent = await cg.get_variable(config.get(CONF_INV_8851_ID))
     for option in config:
         if option not in [CONF_PLATFORM, CONF_INV_8851_ID] and (c := config.get(option)):
-            sens = await binary_sensor.new_binary_sensor(c)
-            cg.add(getattr(parent, "set_" + option + "_binary_sensor")(sens))
+            bin_sens = await binary_sensor.new_binary_sensor(c)
+            cg.add(getattr(parent, "set_" + option + "_binary_sensor")(bin_sens))

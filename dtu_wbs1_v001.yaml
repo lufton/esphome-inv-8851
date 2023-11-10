@@ -10,5 +10,5 @@ esp32:
 packages:
   common: !include common.yaml
   uart: !include packages/uart.yaml
-  dtu_wbs1_v001: !include packages/dtu_wbs1_v001.yaml
   inv_8851: !include packages/inv_8851.yaml
+  dtu_wbs1_v001: !include packages/dtu_wbs1_v001.yaml

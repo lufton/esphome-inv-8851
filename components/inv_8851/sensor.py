@@ -24,7 +24,9 @@ from esphome.const import (
 )
 from . import CONF_INV_8851_ID, INV_8851
 
-DEPENDENCIES = ["uart"]
+DEPENDENCIES = ["inv_8851"]
+
+CODEOWNERS = ["@lufton"]
 
 CONF_BATTERY_CHARCHE_CURRENT = "battery_charge_current"
 CONF_BATTERY_TYPE = "battery_type"
