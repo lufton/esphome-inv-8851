@@ -8,7 +8,7 @@ esp32:
 packages:
   inv_8851:
     url: https://github.com/lufton/esphome-inv-8851
-    ref: dev
+    ref: main
     files:
       - packages/core.yaml
       - packages/entities.yaml
