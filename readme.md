@@ -30,7 +30,7 @@ inv_8851:
 ```
 
 ## 24v vs 48v version
-24v and 48v files are different only in comfiguration of some entities witch have no sense for 24v version (bms_cell_09_voltage — bms_cell_16_voltage) and minimum/maximum values for some number entities (as they depend on voltage). So in theory flashing "wrong" configuration shouldn't make any harm to ESP or inverter.
+24v and 48v files are different only in comfiguration of some entities witch has no sense for 24v version (bms_cell_09_voltage — bms_cell_16_voltage) and minimum/maximum values for some number entities (as they depend on voltage). So in theory flashing "wrong" configuration shouldn't make any harm to ESP or inverter.
 
 ## ...-local.yaml
 This project build to be as simple is possible, so in most cases you woudn't need those files. Regular `.yaml` file will download latest stable version from this repository and use it upon build process. But if you want to customize configuration or you plan to change files in `packages` or `components` directories, than you probably want to use those.
