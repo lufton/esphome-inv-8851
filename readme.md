@@ -1,7 +1,7 @@
 # 8851 inverter protocol integration ESPHome component
 
 ## Compatible inverters
-* PowMr POW-HVM6.5K-48V (tested by @lufton)
+* PowMr POW-HVM6.5K-48V (tested by [@lufton](https://github.com/lufton))
 * PowMr POW-HVM4.5K-24V
 * Simular inverters that utilizes the same DTU (WBS1-V001)
 
