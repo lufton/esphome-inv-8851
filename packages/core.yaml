@@ -1,0 +1,11 @@
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+
+external_components:
+  - source: github://lufton/esphome-inv-8851@dev
+    refresh: 0s
+
+logger:
+
+captive_portal:
