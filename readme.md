@@ -107,56 +107,56 @@ You can flash ESP32 or ESP8266 using this component the same way you flash your 
 | pv_voltage                         	|             	| V    	| 0.1      	|
 
 ### Binary sensors
-| ID                          	| Description 	|
-|-----------------------------	|-------------	|
-| battery_charging            	|             	|
-| battery_connected           	|             	|
-| bus_problem                 	|             	|
-| float_charging              	|             	|
-| grid_pll_problem            	|             	|
-| grid_power                  	|             	|
-| parallel_lock_phase_problem 	|             	|
-| pv_excess                   	|             	|
-| pv_input_problem            	|             	|
-| system_power                	|             	|
+| ID                          	| Description                                                      	|
+|-----------------------------	|------------------------------------------------------------------	|
+| battery_charging            	| Indicates if battery is still charging                           	|
+| battery_connected           	| Indicates if battery is connected                                	|
+| bus_problem                 	|                                                                  	|
+| float_charging              	|                                                                  	|
+| grid_pll_problem            	|                                                                  	|
+| grid_power                  	| Indicates if grid power is connected                             	|
+| parallel_lock_phase_problem 	|                                                                  	|
+| pv_excess                   	| Indicates if there is PV power excess avaiable                   	|
+| pv_input_problem            	| Indicates if PV is connected                                     	|
+| system_power                	| ? Indicates if system is powered either with grid, PV or battery 	|
 
 ### Selects
-| ID                     	| Description 	| Options                                                  	|
-|------------------------	|-------------	|----------------------------------------------------------	|
-| auto_return            	|             	| OFF<br>     ON                                           	|
-| backlight              	|             	| OFF<br>     ON                                           	|
-| battery_equalization   	|             	| OFF<br>     ON                                           	|
-| battery_type           	|             	| AGM<br>     Flooded<br>     User-defined<br>     Library 	|
-| buzzer                 	|             	| OFF<br>     ON                                           	|
-| charge_energy_priority 	|             	| PV & Grid<br>     PV > Grid<br>     PV only              	|
-| fault_record           	|             	| OFF<br>     ON                                           	|
-| frequency              	|             	| 50Hz<br>     60Hz                                        	|
-| grid_voltage_range     	|             	| APL<br>     UPS                                          	|
-| on_grid                	|             	| OFF<br>     ON                                           	|
-| output_energy_priority 	|             	| PV > Grid > Battery<br>     PV > Battery > Grid          	|
-| overload_restart       	|             	| OFF<br>     ON                                           	|
-| overtemp_restart       	|             	| OFF<br>     ON                                           	|
-| parallel_operation     	|             	| OFF<br>     ON                                           	|
-| phase                  	|             	| A<br>     B<br>     C                                    	|
-| power_buzzer           	|             	| OFF<br>     ON                                           	|
-| powersave_mode         	|             	| OFF<br>     ON                                           	|
+| ID                     	| Description                                                                                                	| Options                                                                                                             	| Menu 	|
+|------------------------	|------------------------------------------------------------------------------------------------------------	|---------------------------------------------------------------------------------------------------------------------	|------	|
+| auto_return            	| Auto return to home screen after 1 minute of inactivity                                                    	| OFF<br>     ON                                                                                                      	| 19   	|
+| backlight              	| Backlight always ON mode                                                                                   	| OFF<br>     ON                                                                                                      	| 20   	|
+| battery_equalization   	| Battery equalization program activation                                                                    	| OFF<br>     ON                                                                                                      	| 33   	|
+| battery_type           	| Battery type selection. If User-defined type is selected, then additional   voltage parameters can be set. 	| AGM<br>     Flooded<br>     User-defined<br>     Library                                                            	| 05   	|
+| buzzer                 	| Buzzer that beep every time you press any screen button                                                    	| OFF<br>     ON                                                                                                      	| 18   	|
+| charge_energy_priority 	| Charger source priority                                                                                    	| PV & Grid — PV and Grid at   the same time<br>     PV > Grid — Priority for PV, then Grid<br>     PV only — Only PV 	| 16   	|
+| fault_record           	| Record fault code                                                                                          	| OFF<br>     ON                                                                                                      	| 25   	|
+| frequency              	| Default frequency output mode, can be adjusted with `output_frequency`   number                            	| 50Hz<br>     60Hz                                                                                                   	| 09   	|
+| grid_voltage_range     	| Grid voltage range in witch inverter will work, otherwise will switch to   battery                         	| APL — 90-265V<br>     UPS — 170-265V                                                                                	| 03   	|
+| on_grid                	| Send produced enery to Grid                                                                                	| OFF<br>     ON                                                                                                      	| 10   	|
+| output_energy_priority 	| Which source to use first: Grid or PV                                                                      	| PV > Grid > Battery — Grid   over battery<br>     PV > Battery > Grid — Battery over grid                           	| 01   	|
+| overload_restart       	| Automatic restart after overload protection                                                                	| OFF<br>     ON                                                                                                      	| 06   	|
+| overtemp_restart       	| Automatic restart after over temperature protection                                                        	| OFF<br>     ON                                                                                                      	| 07   	|
+| parallel_operation     	| Parallel operation mode                                                                                    	| OFF<br>     ON                                                                                                      	| 14   	|
+| phase                  	| Witch phase inverter is connected to                                                                       	| A<br>     B<br>     C                                                                                               	| 15   	|
+| power_buzzer           	| Buzzer that beep every time Grid becomes unavailable                                                       	| OFF<br>     ON                                                                                                      	| 22   	|
+| powersave_mode         	| Power save mode, will pulse output voltage to determine and start if load   is connected                   	| OFF<br>     ON                                                                                                      	| 04   	|
 
 ### Numbers
-| ID                             	| Description 	| Unit   	| Resolution 	|
-|--------------------------------	|-------------	|--------	|------------	|
-| battery_back_to_util_voltage   	|             	| V      	| 0.1        	|
-| battery_bulk_voltage           	|             	| V      	| 0.1        	|
-| battery_float_voltage          	|             	| V      	| 0.1        	|
-| battery_charge_cut_off_current 	|             	| A      	| 0.1        	|
-| battery_cut_off_voltage        	|             	| V      	| 0.1        	|
-| battery_equalization_interval  	|             	| Day    	| 1          	|
-| battery_equalization_time      	|             	| Minute 	| 1          	|
-| battery_equalization_timeout   	|             	| Minute 	| 1          	|
-| battery_equalization_voltage   	|             	| V      	| 0.1        	|
-| output_frequency               	|             	| Hz     	| 1          	|
-| output_voltage                 	|             	| V      	| 1          	|
-| total_charge_current           	|             	| A      	| 0.1        	|
-| util_charge_current            	|             	| A      	| 0.1        	|
+| ID                             	| Description                                                                                                          	| Unit   	| Resolution 	| Range                   	| Menu 	|
+|--------------------------------	|----------------------------------------------------------------------------------------------------------------------	|--------	|------------	|-------------------------	|------	|
+| battery_back_to_util_voltage   	| Voltage point at witch inverter will switch to Grid in PV > Battery   > Grid mode                                    	| V      	| 0.1        	| 20-29.2<br>     40-58.4 	| 13   	|
+| battery_bulk_voltage           	| Fully charged battery voltage                                                                                        	| V      	| 0.1        	| 24-29.2<br>     48-58.4 	| 26   	|
+| battery_float_voltage          	| Floating charging mode voltage                                                                                       	| V      	| 0.1        	| 24-29.2<br>     48-58.4 	| 27   	|
+| battery_charge_cut_off_current 	| Charge current at witch inverted assumes that battery is fully charged   and switches into floating charging mode    	| A      	| 0.1        	| 2-20                    	| 12   	|
+| battery_cut_off_voltage        	| Minimum battery voltage, inverter will disconnect battery at this point                                              	| V      	| 0.1        	| 20-24<br>     40-48     	| 29   	|
+| battery_equalization_interval  	| How often battery equalization program will be triggered                                                             	| Day    	| 1          	| 0-90                    	| 37   	|
+| battery_equalization_time      	| How long battery equalization program will run                                                                       	| Minute 	| 1          	| 5-900                   	| 35   	|
+| battery_equalization_timeout   	| How long battery equalization program can run before terminating                                                     	| Minute 	| 1          	| 5-900                   	| 36   	|
+| battery_equalization_voltage   	| Battery equalization voltage                                                                                         	| V      	| 0.1        	| 25-29.5<br>     50-59   	| 34   	|
+| output_frequency               	| Output frequency, that can be in range 50-55Hz for 50Hz mode and 60-55Hz   for 60Hz mode                             	| Hz     	| 1          	| 50-55<br>     60-55     	| N/A  	|
+| output_voltage                 	| Output voltage, resets to closest lower number that is multiple of 5   (234V → 230V, 229V → 225V) after exiting menu 	| V      	| 1          	| 100-240                 	| 08   	|
+| total_charge_current           	| Maximum battery charge current equals PV current + Grid current                                                      	| A      	| 0.1        	| 0-130<br>     0-150     	| 02   	|
+| util_charge_current            	| Maximum current used from Grid to charge battery                                                                     	| A      	| 0.1        	| 0-110<br>     0-140     	| 11   	|
 
 ## Original firmware dump
 [Here](https://github.com/lufton/esphome-inv-8851/blob/main/DTU.bin) you can find original firmware dump file. Restore procedure described in the last step of [Flashing DTU WBS1-V001](#flashing-dtu-wbs1-v001) section.
