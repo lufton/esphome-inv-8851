@@ -1,0 +1,32 @@
+substitutions:
+  name: dtu-wbs1-v001
+  friendly_name: DTU WBS1-V001
+
+esp32:
+  board: esp32-c3-devkitm-1
+
+packages:
+  inv_8851:
+    url: https://github.com/lufton/esphome-inv-8851
+    ref: dev
+    files:
+      - packages/core.yaml
+      - packages/entities.yaml
+      - packages/entities-24v.yaml
+      - packages/dtu_wbs1_v001.yaml
+    refresh: 0s
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  ap:
+    ssid: ${friendly_name}
+    password: !secret ap_password
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota:
+  password: !secret ota_password

@@ -1,4 +1,3 @@
-from logging import error
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import sensor
@@ -22,7 +21,10 @@ from esphome.const import (
     UNIT_VOLT_AMPS,
     UNIT_WATT,
 )
-from . import CONF_INV_8851_ID, INV_8851
+from . import (
+    Inv8851,
+    CONF_INV_8851_ID,
+)
 
 DEPENDENCIES = ["inv_8851"]
 
@@ -82,14 +84,12 @@ CONF_PV_VOLTAGE = "pv_voltage"
 CONFIG_SCHEMA = (
     cv.Schema(
         {
-            cv.GenerateID(CONF_INV_8851_ID): cv.use_id(INV_8851),
+            cv.GenerateID(CONF_INV_8851_ID): cv.use_id(Inv8851),
             cv.Optional(CONF_BATTERY_CHARCHE_CURRENT): sensor.sensor_schema(
                 unit_of_measurement=UNIT_AMPERE,
                 accuracy_decimals=1,
                 device_class=DEVICE_CLASS_CURRENT,
                 state_class=STATE_CLASS_MEASUREMENT,
-            ),
-            cv.Optional(CONF_BATTERY_TYPE): sensor.sensor_schema(
             ),
             cv.Optional(CONF_BATTERY_VOLTAGE): sensor.sensor_schema(
                 unit_of_measurement=UNIT_VOLT,
@@ -381,4 +381,4 @@ async def to_code(config):
     for option in config:
         if option not in [CONF_PLATFORM, CONF_INV_8851_ID] and (c := config.get(option)):
             sens = await sensor.new_sensor(c)
-            cg.add(getattr(parent, "set_" + option + "_sensor")(sens))
+            cg.add(getattr(parent, f"set_{option}_sensor")(sens))

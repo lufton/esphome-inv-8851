@@ -49,22 +49,6 @@ sensor:
       name: "BMS cell 07 voltage"
     bms_cell_08_voltage:
       name: "BMS cell 08 voltage"
-    bms_cell_09_voltage:
-      name: "BMS cell 09 voltage"
-    bms_cell_10_voltage:
-      name: "BMS cell 10 voltage"
-    bms_cell_11_voltage:
-      name: "BMS cell 11 voltage"
-    bms_cell_12_voltage:
-      name: "BMS cell 12 voltage"
-    bms_cell_13_voltage:
-      name: "BMS cell 13 voltage"
-    bms_cell_14_voltage:
-      name: "BMS cell 14 voltage"
-    bms_cell_15_voltage:
-      name: "BMS cell 15 voltage"
-    bms_cell_16_voltage:
-      name: "BMS cell 16 voltage"
     bts_temperature:
       name: "BTS temperature"
     bus_voltage:
@@ -163,42 +147,39 @@ select:
 
 number:
   - platform: inv_8851
-    battery_back_to_util_voltage:
-      name: "Battery back to util voltage"
-      mode: box
-    battery_bulk_voltage:
-      name: "Battery bulk voltage"
-      mode: box
-    battery_float_voltage:
-      name: "Battery float voltage"
-      mode: box
     battery_charge_cut_off_current:
       name: "Battery charge cut-off current"
       mode: box
-    battery_cut_off_voltage:
-      name: "Battery cut-off voltage"
-      mode: box
+      min_value: 2
+      max_value: 20
+      step: 0.1
     battery_equalization_interval:
       name: "Battery equalization interval"
       mode: box
+      min_value: 0
+      max_value: 90
+      step: 1
     battery_equalization_time:
       name: "Battery equalization time"
       mode: box
+      min_value: 5
+      max_value: 900
+      step: 1
     battery_equalization_timeout:
       name: "Battery equalization timeout"
       mode: box
-    battery_equalization_voltage:
-      name: "Battery equalization voltage"
-      mode: box
+      min_value: 5
+      max_value: 900
+      step: 1
     output_frequency:
       name: "Output frequency"
       mode: box
+      min_value: 50
+      max_value: 60
+      step: 1
     output_voltage:
       name: "Output voltage"
       mode: box
-    total_charge_current:
-      name: "Total charge current"
-      mode: box
-    util_charge_current:
-      name: "Util charge current"
-      mode: box
+      min_value: 100
+      max_value: 240
+      step: 1

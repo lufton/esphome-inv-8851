@@ -1,5 +1,0 @@
-uart:
-  - id: inv_8851_uart
-    baud_rate: 9600
-    tx_pin: ${uart_tx_pin}
-    rx_pin: ${uart_rx_pin}

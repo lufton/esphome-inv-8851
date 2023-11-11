@@ -9,13 +9,13 @@ CODEOWNERS = ["@lufton"]
 
 CONF_INV_8851_ID = "inv_8851_id"
 
-INV_8851_NS = cg.esphome_ns.namespace("inv_8851")
-INV_8851 = INV_8851_NS.class_("Inv8851", cg.PollingComponent, uart.UARTDevice)
+inv_8851_ns = cg.esphome_ns.namespace("inv_8851")
+Inv8851 = inv_8851_ns.class_("Inv8851", cg.PollingComponent, uart.UARTDevice)
 
 CONFIG_SCHEMA = (
     cv.Schema(
         {
-            cv.GenerateID(): cv.declare_id(INV_8851),
+            cv.GenerateID(): cv.declare_id(Inv8851),
         }
     )
     .extend(cv.polling_component_schema("5s"))

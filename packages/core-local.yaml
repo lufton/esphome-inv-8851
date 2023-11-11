@@ -13,8 +13,7 @@ uart:
     rx_pin: ${uart_rx_pin}
 
 external_components:
-  - source: github://lufton/esphome-inv-8851@dev
-    refresh: 0s
+  - source: components
 
 inv_8851:
   update_interval: 5s

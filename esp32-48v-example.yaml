@@ -1,21 +1,20 @@
 substitutions:
-  name: dtu-wbs1-v001
-  friendly_name: DTU WBS1-V001
-  uart_tx_pin: GPIO4
-  uart_rx_pin: GPIO5
+  name: inverter
+  friendly_name: Inverter
+  uart_tx_pin: GPIO16
+  uart_rx_pin: GPIO17
 
 esp32:
-  board: esp32-c3-devkitm-1
+  board: wemos_d1_mini32
 
 packages:
   inv_8851:
     url: https://github.com/lufton/esphome-inv-8851
     ref: dev
     files:
-      - entities.yaml
       - packages/core.yaml
-      - packages/uart.yaml
-      - packages/dtu_wbs1_v001.yaml
+      - packages/entities.yaml
+      - packages/entities-48v.yaml
     refresh: 0s
 
 wifi:

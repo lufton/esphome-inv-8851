@@ -1,0 +1,33 @@
+substitutions:
+  name: inverter
+  friendly_name: Inverter
+  uart_tx_pin: GPIO1
+  uart_rx_pin: GPIO3
+
+esp32:
+  board: d1_mini
+
+packages:
+  inv_8851:
+    url: https://github.com/lufton/esphome-inv-8851
+    ref: dev
+    files:
+      - packages/core.yaml
+      - packages/entities.yaml
+      - packages/entities-24v.yaml
+    refresh: 0s
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  ap:
+    ssid: ${friendly_name}
+    password: !secret ap_password
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota:
+  password: !secret ota_password

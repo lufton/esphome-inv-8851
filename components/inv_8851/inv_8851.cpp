@@ -7,21 +7,12 @@
 namespace esphome {
 namespace inv_8851 {
 
-enum { OFF = 0, ON = 1 };
-const char *off_on_options[] = { [OFF] = "Off", [ON] = "On" };
-enum { AGM = 0, FLOODED = 1, USER = 2, LIB = 3 };
 const char *battery_type_options[] = { [AGM] = "AGM", [FLOODED] = "Flooded", [USER] = "User-defined", [LIB] = "Library" };
-enum { CSO = 0, SNU = 1, OSO = 2 };
 const char *charge_energy_priority_options[] = { [CSO] = "PV & Grid", [SNU] = "PV > Grid", [OSO] = "PV only" };
-enum { FIFTY = 0, SIXTY = 1 };
 const char *frequency_options[] = { [FIFTY] = "50Hz", [SIXTY] = "60Hz" };
-enum { APL = 0, UPS = 1 };
 const char *grid_voltage_range_options[] = { [APL] = "APL", [UPS] = "UPS" };
-enum { SUB = 0, SBU = 1 };
-const char *output_energy_priority_options[] = { [SUB] = "SUB", [SBU] = "SBU" };
-enum { TWO_TWENTY = 0, TWO_THIRTY = 1, TWO_FOURTY =2 };
-const char *output_voltage_options[] = { [TWO_TWENTY] = "220V", [TWO_THIRTY] = "230V", [TWO_FOURTY] = "240V" };
-enum { A = 0, B = 1, C = 2 };
+const char *off_on_options[] = { [OFF] = "Off", [ON] = "On" };
+const char *output_energy_priority_options[] = { [SUB] = "PV > Grid > Battery", [SBU] = "PV > Battery > Grid" };
 const char *phase_options[] = { [A] = "A", [B] = "B", [C] = "C" };
 
 void Inv8851::clear_buffer_() {

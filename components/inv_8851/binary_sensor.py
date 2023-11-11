@@ -9,7 +9,10 @@ from esphome.const import (
     DEVICE_CLASS_PROBLEM,
 )
 
-from . import CONF_INV_8851_ID, INV_8851
+from . import (
+    Inv8851,
+    CONF_INV_8851_ID,
+)
 
 DEPENDENCIES = ["inv_8851"]
 
@@ -29,7 +32,7 @@ CONF_SYSTEM_POWER = "system_power"
 CONFIG_SCHEMA = (
     cv.Schema(
         {
-            cv.GenerateID(CONF_INV_8851_ID): cv.use_id(INV_8851),
+            cv.GenerateID(CONF_INV_8851_ID): cv.use_id(Inv8851),
             cv.Optional(CONF_BATTERY_CHARGING): binary_sensor.binary_sensor_schema(
                 device_class=DEVICE_CLASS_BATTERY_CHARGING
             ),
@@ -68,4 +71,4 @@ async def to_code(config):
     for option in config:
         if option not in [CONF_PLATFORM, CONF_INV_8851_ID] and (c := config.get(option)):
             bin_sens = await binary_sensor.new_binary_sensor(c)
-            cg.add(getattr(parent, "set_" + option + "_binary_sensor")(bin_sens))
+            cg.add(getattr(parent, f"set_{option}_binary_sensor")(bin_sens))

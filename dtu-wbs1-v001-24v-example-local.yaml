@@ -1,0 +1,27 @@
+substitutions:
+  name: dtu-wbs1-v001
+  friendly_name: DTU WBS1-V001
+
+esp32:
+  board: esp32-c3-devkitm-1
+
+packages:
+  core: !include packages/core-local.yaml
+  entities: !include packages/entities.yaml
+  entities_24v: !include packages/entities-24v.yaml
+  dtu_wbs1_v001: !include packages/dtu_wbs1_v001.yaml
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  ap:
+    ssid: ${friendly_name}
+    password: !secret ap_password
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota:
+  password: !secret ota_password

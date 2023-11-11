@@ -1,4 +1,3 @@
-from logging import error
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import select
@@ -7,7 +6,11 @@ from esphome.const import (
     ENTITY_CATEGORY_CONFIG,
 )
 
-from . import INV_8851_NS, CONF_INV_8851_ID, INV_8851
+from . import (
+    inv_8851_ns,
+    Inv8851,
+    CONF_INV_8851_ID,
+)
 
 DEPENDENCIES = ["inv_8851"]
 
@@ -43,7 +46,7 @@ OPTIONS = {
     CONF_FREQUENCY: ["50Hz", "60Hz"],
     CONF_GRID_VOLTAGE_RANGE: ["APL", "UPS"],
     CONF_ON_GRID: OFF_ON_OPTIONS,
-    CONF_OUTPUT_ENERGY_PRIORITY: ["SUB", "SBU"],
+    CONF_OUTPUT_ENERGY_PRIORITY: ["PV > Grid > Battery", "PV > Battery > Grid"],
     CONF_OVERLOAD_RESTART: OFF_ON_OPTIONS,
     CONF_OVERTEMP_RESTART: OFF_ON_OPTIONS,
     CONF_PARALLEL_OPERATION: OFF_ON_OPTIONS,
@@ -52,61 +55,61 @@ OPTIONS = {
     CONF_POWERSAVE_MODE: OFF_ON_OPTIONS,
 }
 
-INV_8851_SELECT = INV_8851_NS.class_("Inv8851Select", select.Select, cg.Component)
+Inv8851Select = inv_8851_ns.class_("Inv8851Select", select.Select, cg.Component)
 
 CONFIG_SCHEMA = (
     cv.Schema(
         {
-            cv.GenerateID(CONF_INV_8851_ID): cv.use_id(INV_8851),
-            cv.Optional(CONF_AUTO_RETURN): select.select_schema(INV_8851_SELECT,
+            cv.GenerateID(CONF_INV_8851_ID): cv.use_id(Inv8851),
+            cv.Optional(CONF_AUTO_RETURN): select.select_schema(Inv8851Select,
                 entity_category=ENTITY_CATEGORY_CONFIG
             ),
-            cv.Optional(CONF_BACKLIGHT): select.select_schema(INV_8851_SELECT,
+            cv.Optional(CONF_BACKLIGHT): select.select_schema(Inv8851Select,
                 entity_category=ENTITY_CATEGORY_CONFIG
             ),
-            cv.Optional(CONF_BATTERY_EQUALIZATION): select.select_schema(INV_8851_SELECT,
+            cv.Optional(CONF_BATTERY_EQUALIZATION): select.select_schema(Inv8851Select,
                 entity_category=ENTITY_CATEGORY_CONFIG
             ),
-            cv.Optional(CONF_BATTERY_TYPE): select.select_schema(INV_8851_SELECT,
+            cv.Optional(CONF_BATTERY_TYPE): select.select_schema(Inv8851Select,
                 entity_category=ENTITY_CATEGORY_CONFIG
             ),
-            cv.Optional(CONF_BUZZER): select.select_schema(INV_8851_SELECT,
+            cv.Optional(CONF_BUZZER): select.select_schema(Inv8851Select,
                 entity_category=ENTITY_CATEGORY_CONFIG
             ),
-            cv.Optional(CONF_CHARGE_ENERGY_PRIORITY): select.select_schema(INV_8851_SELECT,
+            cv.Optional(CONF_CHARGE_ENERGY_PRIORITY): select.select_schema(Inv8851Select,
                 entity_category=ENTITY_CATEGORY_CONFIG
             ),
-            cv.Optional(CONF_FAULT_RECORD): select.select_schema(INV_8851_SELECT,
+            cv.Optional(CONF_FAULT_RECORD): select.select_schema(Inv8851Select,
                 entity_category=ENTITY_CATEGORY_CONFIG
             ),
-            cv.Optional(CONF_FREQUENCY): select.select_schema(INV_8851_SELECT,
+            cv.Optional(CONF_FREQUENCY): select.select_schema(Inv8851Select,
                 entity_category=ENTITY_CATEGORY_CONFIG
             ),
-            cv.Optional(CONF_GRID_VOLTAGE_RANGE): select.select_schema(INV_8851_SELECT,
+            cv.Optional(CONF_GRID_VOLTAGE_RANGE): select.select_schema(Inv8851Select,
                 entity_category=ENTITY_CATEGORY_CONFIG
             ),
-            cv.Optional(CONF_ON_GRID): select.select_schema(INV_8851_SELECT,
+            cv.Optional(CONF_ON_GRID): select.select_schema(Inv8851Select,
                 entity_category=ENTITY_CATEGORY_CONFIG
             ),
-            cv.Optional(CONF_OUTPUT_ENERGY_PRIORITY): select.select_schema(INV_8851_SELECT,
+            cv.Optional(CONF_OUTPUT_ENERGY_PRIORITY): select.select_schema(Inv8851Select,
                 entity_category=ENTITY_CATEGORY_CONFIG
             ),
-            cv.Optional(CONF_OVERLOAD_RESTART): select.select_schema(INV_8851_SELECT,
+            cv.Optional(CONF_OVERLOAD_RESTART): select.select_schema(Inv8851Select,
                 entity_category=ENTITY_CATEGORY_CONFIG
             ),
-            cv.Optional(CONF_OVERTEMP_RESTART): select.select_schema(INV_8851_SELECT,
+            cv.Optional(CONF_OVERTEMP_RESTART): select.select_schema(Inv8851Select,
                 entity_category=ENTITY_CATEGORY_CONFIG
             ),
-            cv.Optional(CONF_PARALLEL_OPERATION): select.select_schema(INV_8851_SELECT,
+            cv.Optional(CONF_PARALLEL_OPERATION): select.select_schema(Inv8851Select,
                 entity_category=ENTITY_CATEGORY_CONFIG
             ),
-            cv.Optional(CONF_PHASE): select.select_schema(INV_8851_SELECT,
+            cv.Optional(CONF_PHASE): select.select_schema(Inv8851Select,
                 entity_category=ENTITY_CATEGORY_CONFIG
             ),
-            cv.Optional(CONF_POWER_BUZZER): select.select_schema(INV_8851_SELECT,
+            cv.Optional(CONF_POWER_BUZZER): select.select_schema(Inv8851Select,
                 entity_category=ENTITY_CATEGORY_CONFIG
             ),
-            cv.Optional(CONF_POWERSAVE_MODE): select.select_schema(INV_8851_SELECT,
+            cv.Optional(CONF_POWERSAVE_MODE): select.select_schema(Inv8851Select,
                 entity_category=ENTITY_CATEGORY_CONFIG
             ),
         }
@@ -121,4 +124,4 @@ async def to_code(config):
             sel = await select.new_select(c, options=OPTIONS[option])
             cg.add(getattr(sel, "set_parent")(parent))
             cg.add(getattr(sel, "set_type")(option))
-            cg.add(getattr(parent, "set_" + option + "_select")(sel))
+            cg.add(getattr(parent, f"set_{option}_select")(sel))

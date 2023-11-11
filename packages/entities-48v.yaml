@@ -1,0 +1,63 @@
+sensor:
+  - platform: inv_8851
+    bms_cell_09_voltage:
+      name: "BMS cell 09 voltage"
+    bms_cell_10_voltage:
+      name: "BMS cell 10 voltage"
+    bms_cell_11_voltage:
+      name: "BMS cell 11 voltage"
+    bms_cell_12_voltage:
+      name: "BMS cell 12 voltage"
+    bms_cell_13_voltage:
+      name: "BMS cell 13 voltage"
+    bms_cell_14_voltage:
+      name: "BMS cell 14 voltage"
+    bms_cell_15_voltage:
+      name: "BMS cell 15 voltage"
+    bms_cell_16_voltage:
+      name: "BMS cell 16 voltage"
+
+number:
+  - platform: inv_8851
+    battery_back_to_util_voltage:
+      name: "Battery back to util voltage"
+      mode: box
+      min_value: 40
+      max_value: 58.4
+      step: 0.1
+    battery_bulk_voltage:
+      name: "Battery bulk voltage"
+      mode: box
+      min_value: 48
+      max_value: 58.4
+      step: 0.1
+    battery_float_voltage:
+      name: "Battery float voltage"
+      mode: box
+      min_value: 48
+      max_value: 58.4
+      step: 0.1
+    battery_cut_off_voltage:
+      name: "Battery cut-off voltage"
+      mode: box
+      min_value: 40
+      max_value: 48
+      step: 0.1
+    battery_equalization_voltage:
+      name: "Battery equalization voltage"
+      mode: box
+      min_value: 50
+      max_value: 59
+      step: 0.1
+    total_charge_current:
+      name: "Total charge current"
+      mode: box
+      min_value: 0
+      max_value: 130
+      step: 0.1
+    util_charge_current:
+      name: "Util charge current"
+      mode: box
+      min_value: 0
+      max_value: 110
+      step: 0.1
