@@ -12,9 +12,9 @@ packages:
     url: https://github.com/lufton/esphome-inv-8851
     ref: dev
     files:
+      - entities.yaml
       - packages/core.yaml
       - packages/uart.yaml
-      - packages/inv_8851.yaml
       - packages/dtu_wbs1_v001.yaml
     refresh: 0s
 

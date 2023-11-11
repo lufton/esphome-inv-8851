@@ -9,3 +9,6 @@ external_components:
 logger:
 
 captive_portal:
+
+inv_8851:
+  update_interval: 5s
