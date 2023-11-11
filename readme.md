@@ -39,8 +39,8 @@ This project build to be as simple is possible, so in most cases you woudn't nee
 You can flash WBS1-V001 using this component (use corresponding `...-example.yaml` file). This way you can use original DTU with much more comfortable and easy way. This configuration also supports onboard LED indication.
 In order to flash original DTU follow next steps:
 1. Disassemble DTU (it has 4 screws in the corners under the foamy sticker on the bottom)
-2. Solder pin headers of jump wires to 5V, GND, BOOT, RXD1, TXD1 pads (they are labeled)
-3. Connect USB to TTL module VCC→5V, RX→TX, TX→RX and GND→GND with BOOT pin connected to GND
+2. Solder pin headers of jump wires to +5V, GND1, BOOT1, RXD1, TXD1 pads (they are labeled)
+3. Connect USB to TTL module VCC → +5V, RX → TXD1, TX → RXD1 and GND → GND1 with BOOT1 pin connected to GND1
 4. Dump and store original firmware using [esptool](https://github.com/espressif/esptool/releases/tag/v4.6.2) (replace `COM1` with valid port number):<br>
 `esptool.exe -p COM1 -b 460800 read_flash 0x0 0x400000 DTU.bin`
 5. Flash ESPHome with corresponding configuration
@@ -158,6 +158,9 @@ You can flash ESP32 or ESP8266 using this component the same way you flash your 
 | total_charge_current           	|             	| A      	| 0.1        	|
 | util_charge_current            	|             	| A      	| 0.1        	|
 
+## Original firmware dump
+[Here](https://github.com/lufton/esphome-inv-8851/blob/main/DTU.bin) you can find original firmware dump file. Restore procedure described in the last step of [Flashing DTU WBS1-V001](#flashing-dtu-wbs1-v001) section.
+
 ## Thanks
-* @leodesigner for his work on [powmr4500_comm](https://github.com/leodesigner/powmr4500_comm)
-* @aquaforum for his work on [c++ header file](https://github.com/leodesigner/powmr4500_comm/blob/main/include/inv8851.h) and protocol reverse engineering
+* [@leodesigner](https://github.com/leodesigner) for his work on [powmr4500_comm](https://github.com/leodesigner/powmr4500_comm)
+* [@aquaforum](https://github.com/aquaforum) for his work on [c++ header file](https://github.com/leodesigner/powmr4500_comm/blob/main/include/inv8851.h) and protocol reverse engineering
