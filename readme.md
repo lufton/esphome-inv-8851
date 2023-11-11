@@ -3,7 +3,7 @@
 ## Compatible inverters
 * PowMr POW-HVM6.5K-48V (tested by [@lufton](https://github.com/lufton))
 * PowMr POW-HVM4.5K-24V
-* Simular inverters that utilizes the same DTU (WBS1-V001)
+* Simular inverters that utilize the same DTU (WBS1-V001)
 
 ## Capabilities
 This component will let you monitor (sensors and binary sensors) and control (numbers and selects) compatible inverter without need of installing Chinese software and depend on any third-party services.
