@@ -1,0 +1,14 @@
+sensor:
+  - platform: inv_8851
+    bts_temperature:
+      name: "BTS temperature"
+    fan1_speed_percentage:
+      name: "Fan 1 speed percentage"
+    fan2_speed_percentage:
+      name: "Fan 2 speed percentage"
+    ntc2_temperature:
+      name: "NTC2 temperature"
+    ntc3_temperature:
+      name: "NTC3 temperature"
+    ntc4_temperature:
+      name: "NTC4 temperature"

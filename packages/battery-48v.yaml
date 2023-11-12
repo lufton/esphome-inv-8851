@@ -1,22 +1,3 @@
-sensor:
-  - platform: inv_8851
-    bms_cell_09_voltage:
-      name: "BMS cell 09 voltage"
-    bms_cell_10_voltage:
-      name: "BMS cell 10 voltage"
-    bms_cell_11_voltage:
-      name: "BMS cell 11 voltage"
-    bms_cell_12_voltage:
-      name: "BMS cell 12 voltage"
-    bms_cell_13_voltage:
-      name: "BMS cell 13 voltage"
-    bms_cell_14_voltage:
-      name: "BMS cell 14 voltage"
-    bms_cell_15_voltage:
-      name: "BMS cell 15 voltage"
-    bms_cell_16_voltage:
-      name: "BMS cell 16 voltage"
-
 number:
   - platform: inv_8851
     battery_back_to_util_voltage:

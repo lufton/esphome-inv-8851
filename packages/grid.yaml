@@ -1,0 +1,22 @@
+binary_sensor:
+  - platform: inv_8851
+    bus_and_grid_voltage_match:
+      name: "Bus and grid voltage match"
+
+sensor:
+  - platform: inv_8851
+    grid_current:
+      name: "Grid current"
+    grid_frequency:
+      name: "Grid frequency"
+    grid_voltage:
+      name: "Grid voltage"
+
+select:
+  - platform: inv_8851
+    grid_voltage_range:
+      name: "Grid voltage range"
+    on_grid:
+      name: "On grid"
+    power_buzzer:
+      name: "Power buzzer"

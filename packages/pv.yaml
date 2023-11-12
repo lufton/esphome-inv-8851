@@ -1,0 +1,22 @@
+binary_sensor:
+  - platform: inv_8851
+    pv_excess:
+      name: "PV excess"
+    pv_input:
+      name: "PV input"
+    pv_topology_initialization:
+      name: "PV topology initialization"
+
+text_sensor:
+  - platform: inv_8851
+    pv_topology:
+      name: "PV topology"
+
+sensor:
+  - platform: inv_8851
+    pv_current:
+      name: "PV current"
+    pv_power:
+      name: "PV power"
+    pv_voltage:
+      name: "PV voltage"

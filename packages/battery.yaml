@@ -1,0 +1,57 @@
+binary_sensor:
+  - platform: inv_8851
+    battery:
+      name: "Battery"
+    charging:
+      name: "Charging"
+    equalization_finished:
+      name: "Equalization finished"
+    equalization_started:
+      name: "Equalization started"
+    float_charging:
+      name: "Float charging"
+
+sensor:
+  - platform: inv_8851
+    battery_charge_current:
+      name: "Battery charge current"
+    battery_voltage:
+      name: "Battery voltage"
+
+select:
+  - platform: inv_8851
+    battery_equalization:
+      name: "Battery equalization"
+    battery_type:
+      name: "Battery type"
+    charge_energy_priority:
+      name: "Charge energy priority"
+    output_energy_priority:
+      name: "Output energy priority"
+
+number:
+  - platform: inv_8851
+    battery_charge_cut_off_current:
+      name: "Battery charge cut-off current"
+      mode: box
+      min_value: 2
+      max_value: 20
+      step: 0.1
+    battery_equalization_interval:
+      name: "Battery equalization interval"
+      mode: box
+      min_value: 0
+      max_value: 90
+      step: 1
+    battery_equalization_time:
+      name: "Battery equalization time"
+      mode: box
+      min_value: 5
+      max_value: 900
+      step: 1
+    battery_equalization_timeout:
+      name: "Battery equalization timeout"
+      mode: box
+      min_value: 5
+      max_value: 900
+      step: 1

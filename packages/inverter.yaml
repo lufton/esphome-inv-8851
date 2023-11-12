@@ -1,0 +1,96 @@
+binary_sensor:
+  - platform: inv_8851
+    buck_topology_initialization:
+      name: "Buck topology initialization"
+    disable_utility:
+      name: "Disable utility"
+    inverter_topology_initialization:
+      name: "Inverter topology initialization"
+    llc_topology_initialization:
+      name: "LLC topology initialization"
+    system_initialization:
+      name: "System initialization"
+    system_power:
+      name: "System power"
+
+text_sensor:
+  - platform: inv_8851
+    buck_topology:
+      name: "Buck topology"
+    inverter_topology:
+      name: "Inverter topology"
+    llc_topology:
+      name: "LLC topology"
+
+sensor:
+  - platform: inv_8851
+    bus_voltage:
+      name: "Bus voltage"
+    inverter_apparent_power:
+      name: "Inverter apparent power"
+    inverter_apparent_power_percentage:
+      name: "Inverter apparent power percentage"
+    inverter_current:
+      name: "Inverter current"
+    inverter_frequency:
+      name: "Inverter frequency"
+    inverter_power_percentage:
+      name: "Inverter power percentage"
+    inverter_software_version:
+      name: "Inverter software version"
+    inverter_voltage:
+      name: "Inverter voltage"
+    inverter_voltage_dc_component:
+      name: "Inverter voltage DC component"
+    load_apparent_power:
+      name: "Load apparent power"
+    load_current:
+      name: "Load current"
+    load_power:
+      name: "Load power"
+    log_number:
+      name: "Log number"
+    low_load_current:
+      name: "Low load current"
+
+select:
+  - platform: inv_8851
+    auto_return:
+      name: "Auto return"
+    backlight:
+      name: "Backlight"
+    buzzer:
+      name: "Buzzer"
+    fault_record:
+      name: "Fault record"
+    frequency:
+      name: "Frequency"
+    overload_restart:
+      name: "Overload restart"
+    overtemp_restart:
+      name: "Overtemp restart"
+    powersave_mode:
+      name: "Powersave mode"
+    warning_buzer:
+      name: "Warning buzer"
+
+number:
+  - platform: inv_8851
+    inverter_maximum_power:
+      name: "Inverter maximum power"
+      mode: box
+      min_value: 0
+      max_value: ${inverter_maximum_power}
+      step: 1
+    output_frequency:
+      name: "Output frequency"
+      mode: box
+      min_value: 50
+      max_value: 60
+      step: 1
+    output_voltage:
+      name: "Output voltage"
+      mode: box
+      min_value: 100
+      max_value: 240
+      step: 1

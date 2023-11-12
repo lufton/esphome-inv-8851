@@ -1,4 +1,5 @@
 substitutions:
+  inverter_maximum_power: "4500"
   name: inverter
   friendly_name: Inverter
   uart_tx_pin: GPIO1
@@ -9,8 +10,13 @@ esp32:
 
 packages:
   core: !include packages/core-local.yaml
-  entities: !include packages/entities.yaml
-  entities_24v: !include packages/entities-24v.yaml
+  inverter: !include packages/inverter.yaml
+  grid: !include packages/grid.yaml
+  battery: !include packages/battery.yaml
+  battery-24v: !include packages/battery-24v.yaml
+  pv: !include packages/pv.yaml
+  parallel: !include packages/parallel.yaml
+  bms-24v: !include packages/bms-24v.yaml
 
 wifi:
   ssid: !secret wifi_ssid

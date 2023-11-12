@@ -3,6 +3,7 @@ import esphome.config_validation as cv
 from esphome.components import sensor
 from esphome.const import (
     CONF_BATTERY_VOLTAGE,
+    CONF_BUS_VOLTAGE,
     CONF_PLATFORM,
     DEVICE_CLASS_APPARENT_POWER,
     DEVICE_CLASS_BATTERY,
@@ -52,7 +53,6 @@ CONF_BMS_CELL_14_VOLTAGE = "bms_cell_14_voltage"
 CONF_BMS_CELL_15_VOLTAGE = "bms_cell_15_voltage"
 CONF_BMS_CELL_16_VOLTAGE = "bms_cell_16_voltage"
 CONF_BTS_TEMPERATURE = "bts_temperature"
-CONF_BUS_VOLTAGE = "bus_voltage"
 CONF_FAN1_SPEED_PERCENTAGE = "fan1_speed_percentage"
 CONF_FAN2_SPEED_PERCENTAGE = "fan2_speed_percentage"
 CONF_GRID_CURRENT = "grid_current"
@@ -281,16 +281,14 @@ CONFIG_SCHEMA = (
                 accuracy_decimals=0,
                 state_class=STATE_CLASS_MEASUREMENT,
             ),
-            cv.Optional(CONF_INVERTER_SOFTWARE_VERSION): sensor.sensor_schema(
-            ),
+            cv.Optional(CONF_INVERTER_SOFTWARE_VERSION): sensor.sensor_schema(),
             cv.Optional(CONF_INVERTER_VOLTAGE): sensor.sensor_schema(
                 unit_of_measurement=UNIT_VOLT,
                 accuracy_decimals=1,
                 device_class=DEVICE_CLASS_VOLTAGE,
                 state_class=STATE_CLASS_MEASUREMENT,
             ),
-            cv.Optional(CONF_INVERTER_VOLTAGE_DC_COMPONENT): sensor.sensor_schema(
-            ),
+            cv.Optional(CONF_INVERTER_VOLTAGE_DC_COMPONENT): sensor.sensor_schema(),
             cv.Optional(CONF_LOAD_APPARENT_POWER): sensor.sensor_schema(
                 unit_of_measurement=UNIT_VOLT_AMPS,
                 accuracy_decimals=0,
@@ -309,8 +307,7 @@ CONFIG_SCHEMA = (
                 device_class=DEVICE_CLASS_POWER,
                 state_class=STATE_CLASS_MEASUREMENT,
             ),
-            cv.Optional(CONF_LOG_NUMBER): sensor.sensor_schema(
-            ),
+            cv.Optional(CONF_LOG_NUMBER): sensor.sensor_schema(),
             cv.Optional(CONF_LOW_LOAD_CURRENT): sensor.sensor_schema(
                 unit_of_measurement=UNIT_AMPERE,
                 accuracy_decimals=2,

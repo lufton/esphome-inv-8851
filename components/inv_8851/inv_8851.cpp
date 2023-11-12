@@ -14,6 +14,7 @@ const char *grid_voltage_range_options[] = { [APL] = "APL", [UPS] = "UPS" };
 const char *off_on_options[] = { [OFF] = "Off", [ON] = "On" };
 const char *output_energy_priority_options[] = { [SUB] = "PV > Grid > Battery", [SBU] = "PV > Battery > Grid" };
 const char *phase_options[] = { [A] = "A", [B] = "B", [C] = "C" };
+const char *run_mode_options[] = { [standby_mode] = "standby", [fault_mode] = "fault", [shutdown_mode] = "shutdown", [normal_mode] = "normal", [no_battery_mode] = "no_battery", [discharge_mode] = "discharge", [parallel_discharge] = "parallel_disc", [bypass_mode] = "bypass", [charge_mode] = "charge", [grid_discharge_mode] = "grid_discharge", [micro_grid_discharge_mode] = "micro_grid_discharge" };
 
 void Inv8851::clear_buffer_() {
   while (this->available()) this->read();
@@ -71,16 +72,30 @@ void Inv8851::update() {
 void Inv8851::dump_config() {
   ESP_LOGCONFIG(TAG, "INV_8851:");
   #ifdef USE_BINARY_SENSOR
-    LOG_BINARY_SENSOR("", "Battery charging", this->battery_charging_binary_sensor_);
-    LOG_BINARY_SENSOR("", "Battery connected", this->battery_connected_binary_sensor_);
-    LOG_BINARY_SENSOR("", "Bus problem", this->bus_problem_binary_sensor_);
+    LOG_BINARY_SENSOR("", "Battery connected", this->battery_binary_sensor_);
+    LOG_BINARY_SENSOR("", "Buck topology initialization", this->buck_topology_initialization_binary_sensor_);
+    LOG_BINARY_SENSOR("", "Bus", this->bus_binary_sensor_);
+    LOG_BINARY_SENSOR("", "Bus and grid voltage match", this->bus_and_grid_voltage_match_binary_sensor_);
+    LOG_BINARY_SENSOR("", "Charging", this->charging_binary_sensor_);
+    LOG_BINARY_SENSOR("", "Disable utility", this->disable_utility_binary_sensor_);
+    LOG_BINARY_SENSOR("", "Equalization finished", this->equalization_finished_binary_sensor_);
+    LOG_BINARY_SENSOR("", "Equalization started", this->equalization_started_binary_sensor_);
     LOG_BINARY_SENSOR("", "Float charging", this->float_charging_binary_sensor_);
-    LOG_BINARY_SENSOR("", "Grid PLL problem", this->grid_pll_problem_binary_sensor_);
-    LOG_BINARY_SENSOR("", "Grid power", this->grid_power_binary_sensor_);
-    LOG_BINARY_SENSOR("", "Parallel lock phase problem", this->parallel_lock_phase_problem_binary_sensor_);
+    LOG_BINARY_SENSOR("", "Grid PLL", this->grid_pll_binary_sensor_);
+    LOG_BINARY_SENSOR("", "Inverter topology initialization", this->inverter_topology_initialization_binary_sensor_);
+    LOG_BINARY_SENSOR("", "LLC topology initialization", this->llc_topology_initialization_binary_sensor_);
+    LOG_BINARY_SENSOR("", "Parallel lock phase problem", this->parallel_lock_phase_binary_sensor_);
     LOG_BINARY_SENSOR("", "PV excess", this->pv_excess_binary_sensor_);
-    LOG_BINARY_SENSOR("", "PV input problem", this->pv_input_problem_binary_sensor_);
+    LOG_BINARY_SENSOR("", "PV input", this->pv_input_binary_sensor_);
+    LOG_BINARY_SENSOR("", "PV topology initialization", this->pv_topology_initialization_binary_sensor_);
     LOG_BINARY_SENSOR("", "System power", this->system_power_binary_sensor_);
+  #endif
+
+  #ifdef USE_TEXT_SENSOR
+    LOG_TEXT_SENSOR("", "Buck topology", this->buck_topology_text_sensor_);
+    LOG_TEXT_SENSOR("", "Inverter topology", this->inverter_topology_text_sensor_);
+    LOG_TEXT_SENSOR("", "LLC topology", this->llc_topology_text_sensor_);
+    LOG_TEXT_SENSOR("", "PV topology", this->pv_topology_text_sensor_);
   #endif
 
   #ifdef USE_SENSOR
@@ -154,6 +169,7 @@ void Inv8851::dump_config() {
     LOG_SELECT("", "Phase", this->phase_select_);
     LOG_SELECT("", "Power buzzer", this->power_buzzer_select_);
     LOG_SELECT("", "Powersave mode", this->powersave_mode_select_);
+    LOG_SELECT("", "Warning buzer", this->warning_buzer_select_);
   #endif
 
   #ifdef USE_NUMBER
@@ -166,6 +182,7 @@ void Inv8851::dump_config() {
     LOG_NUMBER("", "Battery equalization time", this->battery_equalization_time_number_);
     LOG_NUMBER("", "Battery equalization timeout", this->battery_equalization_timeout_number_);
     LOG_NUMBER("", "Battery equalization voltage", this->battery_equalization_voltage_number_);
+    LOG_NUMBER("", "Inverter maximum power", this->inverter_maximum_power_number_);
     LOG_NUMBER("", "Output frequency", this->output_frequency_number_);
     LOG_NUMBER("", "Output voltage", this->output_voltage_number_);
     LOG_NUMBER("", "Total charge current", this->total_charge_current_number_);
@@ -184,16 +201,31 @@ void Inv8851::request_config_() {
 void Inv8851::publish_state_(const uint8_t *resp) {
   inv8851_state_s *state = (inv8851_state_s *) resp;
   #ifdef USE_BINARY_SENSOR
-    PUBLISH_STATE(this->battery_charging_binary_sensor_, !state->charge_finish);
-    PUBLISH_STATE(this->battery_connected_binary_sensor_, !state->no_battery);
-    PUBLISH_STATE(this->bus_problem_binary_sensor_, !state->bus_ok);
+    PUBLISH_STATE(this->battery_binary_sensor_, !state->no_battery);
+    PUBLISH_STATE(this->buck_topology_initialization_binary_sensor_, !!state->buck_topology_initial_finished);
+    PUBLISH_STATE(this->bus_binary_sensor_, !!state->bus_ok);
+    PUBLISH_STATE(this->bus_and_grid_voltage_match_binary_sensor_, !!state->bus_n_grid_voltage_match);
+    PUBLISH_STATE(this->charging_binary_sensor_, !state->charge_finish);
+    PUBLISH_STATE(this->disable_utility_binary_sensor_, !!state->disable_utility);
+    PUBLISH_STATE(this->equalization_finished_binary_sensor_, !!state->eq_charge_ready);
+    PUBLISH_STATE(this->equalization_started_binary_sensor_, !!state->eq_charge_start);
     PUBLISH_STATE(this->float_charging_binary_sensor_, !!state->floating_charge);
-    PUBLISH_STATE(this->grid_pll_problem_binary_sensor_, !state->grid_pll_ok);
-    PUBLISH_STATE(this->grid_power_binary_sensor_, !state->disable_utility);
-    PUBLISH_STATE(this->parallel_lock_phase_problem_binary_sensor_, !state->parallel_lock_phase_ok);
+    PUBLISH_STATE(this->grid_pll_binary_sensor_, !!state->grid_pll_ok);
+    PUBLISH_STATE(this->inverter_topology_initialization_binary_sensor_, !!state->inverter_topology_initial_finished);
+    PUBLISH_STATE(this->llc_topology_initialization_binary_sensor_, !!state->llc_topology_initial_finished);
+    PUBLISH_STATE(this->parallel_lock_phase_binary_sensor_, !!state->parallel_lock_phase_ok);
     PUBLISH_STATE(this->pv_excess_binary_sensor_, !!state->pv_excess);
-    PUBLISH_STATE(this->pv_input_problem_binary_sensor_, !state->pv_input_ok);
+    PUBLISH_STATE(this->pv_input_binary_sensor_, !!state->pv_input_ok);
+    PUBLISH_STATE(this->pv_topology_initialization_binary_sensor_, !!state->pv_topology_initial_finished);
+    PUBLISH_STATE(this->system_initialization_binary_sensor_, !!state->system_initial_finished);
     PUBLISH_STATE(this->system_power_binary_sensor_, !!state->system_power);
+  #endif
+
+  #ifdef USE_TEXT_SENSOR
+    PUBLISH_STATE(this->buck_topology_text_sensor_, run_mode_options[state->buck_topology]);
+    PUBLISH_STATE(this->inverter_topology_text_sensor_, run_mode_options[state->inverter_topology]);
+    PUBLISH_STATE(this->llc_topology_text_sensor_, run_mode_options[state->llc_topology]);
+    PUBLISH_STATE(this->pv_topology_text_sensor_, run_mode_options[state->pv_topology]);
   #endif
 
   #ifdef USE_SENSOR
@@ -271,6 +303,7 @@ void Inv8851::publish_config_(const uint8_t *resp) {
     PUBLISH_STATE(this->phase_select_, phase_options[config->phase]);
     PUBLISH_STATE(this->power_buzzer_select_, off_on_options[config->energy_interrupt_buzzer_on]);
     PUBLISH_STATE(this->powersave_mode_select_, off_on_options[config->powersave_on]);
+    PUBLISH_STATE(this->warning_buzer_select_, off_on_options[config->warning_flag_buzer_on]);
   #endif
 
   #ifdef USE_NUMBER
@@ -283,6 +316,7 @@ void Inv8851::publish_config_(const uint8_t *resp) {
     PUBLISH_STATE(this->battery_equalization_time_number_, config->batt_eq_time);
     PUBLISH_STATE(this->battery_equalization_timeout_number_, config->batt_eq_timeout);
     PUBLISH_STATE(this->battery_equalization_voltage_number_, config->batt_eq_voltage / 100.0f);
+    PUBLISH_STATE(this->inverter_maximum_power_number_, config->inverter_max_power);
     PUBLISH_STATE(this->output_frequency_number_, config->output_freq / 100.f);
     PUBLISH_STATE(this->output_voltage_number_, config->output_voltage / 10.0f);
     PUBLISH_STATE(this->total_charge_current_number_, config->total_chg_current / 10.0f);
@@ -308,6 +342,7 @@ void Inv8851::set_select_value(const std::string type, size_t index) {
   else if (type == "phase") this->config_.phase = index;
   else if (type == "power_buzzer") this->config_.energy_interrupt_buzzer_on = index;
   else if (type == "powersave_mode") this->config_.powersave_on = index;
+  else if (type == "warning_buzer") this->config_.warning_flag_buzer_on = index;
   else return;
 
   inv8851_config_s config;
@@ -329,6 +364,7 @@ void Inv8851::set_number_value(const std::string type, float value) {
   else if (type == "battery_equalization_time") this->config_.batt_eq_time = value;
   else if (type == "battery_equalization_timeout") this->config_.batt_eq_timeout = value;
   else if (type == "battery_equalization_voltage") this->config_.batt_eq_voltage = value * 100.0f;
+  else if (type == "inverter_maximum_power") this->config_.inverter_max_power = value;
   else if (type == "output_frequency") this->config_.output_freq = value * 100.0f;
   else if (type == "output_voltage") this->config_.output_voltage = value * 10.0f;
   else if (type == "total_charge_current") this->config_.total_chg_current = value * 10.0f;

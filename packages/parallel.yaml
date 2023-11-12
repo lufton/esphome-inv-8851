@@ -1,0 +1,24 @@
+binary_sensor:
+  - platform: inv_8851
+    bus:
+      name: "Bus"
+    grid_pll:
+      name: "Grid PLL"
+    parallel_lock_phase:
+      name: "Parallel lock phase"
+
+sensor:
+  - platform: inv_8851
+    parallel_current:
+      name: "Parallel current"
+    parallel_frequency:
+      name: "Parallel frequency"
+    parallel_voltage:
+      name: "Parallel voltage"
+
+select:
+  - platform: inv_8851
+    parallel_operation:
+      name: "Parallel operation"
+    phase:
+      name: "Phase"

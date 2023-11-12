@@ -1,4 +1,5 @@
 substitutions:
+  inverter_maximum_power: "6500"
   name: inverter
   friendly_name: Inverter
   uart_tx_pin: GPIO1
@@ -13,8 +14,13 @@ packages:
     ref: main
     files:
       - packages/core.yaml
-      - packages/entities.yaml
-      - packages/entities-48v.yaml
+      - packages/inverter.yaml
+      - packages/grid.yaml
+      - packages/battery.yaml
+      - packages/battery-48v.yaml
+      - packages/pv.yaml
+      - packages/parallel.yaml
+      - packages/bms-48v.yaml
     refresh: 0s
 
 wifi:
