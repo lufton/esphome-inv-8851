@@ -1,22 +1,21 @@
 substitutions:
-  inverter_maximum_power: "4500"
-  name: inverter
-  friendly_name: Inverter
-  uart_tx_pin: GPIO16
-  uart_rx_pin: GPIO17
+  inverter_maximum_power: "6500"
+  name: dtu-wbs1-v001
+  friendly_name: DTU WBS1-V001
 
 esp32:
-  board: wemos_d1_mini32
+  board: esp32-c3-devkitm-1
 
 packages:
   core: !include packages/core-local.yaml
   inverter: !include packages/inverter.yaml
   grid: !include packages/grid.yaml
   battery: !include packages/battery.yaml
-  battery-24v: !include packages/battery-24v.yaml
-  pv: !include packages/pv.yaml
-  parallel: !include packages/parallel.yaml
-  bms-24v: !include packages/bms-24v.yaml
+  battery-48v: !include packages/battery-48v.yaml
+  # pv: !include packages/pv.yaml
+  # parallel: !include packages/parallel.yaml
+  # bms-48v: !include packages/bms-48v.yaml
+  dtu_wbs1_v001: !include packages/dtu_wbs1_v001.yaml
 
 wifi:
   ssid: !secret wifi_ssid

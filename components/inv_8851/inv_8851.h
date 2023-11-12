@@ -7,6 +7,9 @@
 #ifdef USE_BINARY_SENSOR
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #endif
+#ifdef USE_TEXT_SENSOR
+#include "esphome/components/text_sensor/text_sensor.h"
+#endif
 #ifdef USE_SENSOR
 #include "esphome/components/sensor/sensor.h"
 #endif
@@ -32,16 +35,31 @@ enum Phase { A = 0, B = 1, C = 2 };
 class Inv8851 : public PollingComponent, public uart::UARTDevice {
  public:
    #ifdef USE_BINARY_SENSOR
-    SUB_BINARY_SENSOR(battery_charging)
-    SUB_BINARY_SENSOR(battery_connected)
-    SUB_BINARY_SENSOR(bus_problem)
+    SUB_BINARY_SENSOR(battery)
+    SUB_BINARY_SENSOR(buck_topology_initialization)
+    SUB_BINARY_SENSOR(bus)
+    SUB_BINARY_SENSOR(bus_and_grid_voltage_match)
+    SUB_BINARY_SENSOR(charging)
+    SUB_BINARY_SENSOR(disable_utility)
+    SUB_BINARY_SENSOR(equalization_finished)
+    SUB_BINARY_SENSOR(equalization_started)
     SUB_BINARY_SENSOR(float_charging)
-    SUB_BINARY_SENSOR(grid_pll_problem)
-    SUB_BINARY_SENSOR(grid_power)
-    SUB_BINARY_SENSOR(parallel_lock_phase_problem)
+    SUB_BINARY_SENSOR(grid_pll)
+    SUB_BINARY_SENSOR(inverter_topology_initialization)
+    SUB_BINARY_SENSOR(llc_topology_initialization)
+    SUB_BINARY_SENSOR(parallel_lock_phase)
     SUB_BINARY_SENSOR(pv_excess)
-    SUB_BINARY_SENSOR(pv_input_problem)
+    SUB_BINARY_SENSOR(pv_input)
+    SUB_BINARY_SENSOR(pv_topology_initialization)
+    SUB_BINARY_SENSOR(system_initialization)
     SUB_BINARY_SENSOR(system_power)
+  #endif
+
+  #ifdef USE_TEXT_SENSOR
+    SUB_TEXT_SENSOR(buck_topology)
+    SUB_TEXT_SENSOR(inverter_topology)
+    SUB_TEXT_SENSOR(llc_topology)
+    SUB_TEXT_SENSOR(pv_topology)
   #endif
 
   #ifdef USE_SENSOR
@@ -115,6 +133,7 @@ class Inv8851 : public PollingComponent, public uart::UARTDevice {
     SUB_SELECT(phase)
     SUB_SELECT(power_buzzer)
     SUB_SELECT(powersave_mode)
+    SUB_SELECT(warning_buzer)
   #endif
 
   #ifdef USE_NUMBER
@@ -127,6 +146,7 @@ class Inv8851 : public PollingComponent, public uart::UARTDevice {
     SUB_NUMBER(battery_equalization_time)
     SUB_NUMBER(battery_equalization_timeout)
     SUB_NUMBER(battery_equalization_voltage)
+    SUB_NUMBER(inverter_maximum_power)
     SUB_NUMBER(output_frequency)
     SUB_NUMBER(output_voltage)
     SUB_NUMBER(total_charge_current)

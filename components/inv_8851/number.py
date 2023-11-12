@@ -8,12 +8,14 @@ from esphome.const import (
     CONF_STEP,
     DEVICE_CLASS_CURRENT,
     DEVICE_CLASS_FREQUENCY,
+    DEVICE_CLASS_POWER,
     DEVICE_CLASS_VOLTAGE,
     ENTITY_CATEGORY_CONFIG,
     UNIT_AMPERE,
     UNIT_HERTZ,
     UNIT_MINUTE,
     UNIT_VOLT,
+    UNIT_WATT,
 )
 
 from . import (
@@ -35,6 +37,7 @@ CONF_BATTERY_EQUALIZATION_INTERVAL = "battery_equalization_interval"
 CONF_BATTERY_EQUALIZATION_TIME = "battery_equalization_time"
 CONF_BATTERY_EQUALIZATION_TIMEOUT = "battery_equalization_timeout"
 CONF_BATTERY_EQUALIZATION_VOLTAGE = "battery_equalization_voltage"
+CONF_INVERTER_MAXIMUM_POWER = "inverter_maximum_power"
 CONF_OUTPUT_FREQUENCY = "output_frequency"
 CONF_OUTPUT_VOLTAGE = "output_voltage"
 CONF_TOTAL_CHARGE_CURRENT = "total_charge_current"
@@ -93,6 +96,11 @@ CONFIG_SCHEMA = (
             cv.Optional(CONF_BATTERY_EQUALIZATION_VOLTAGE): number.number_schema(Inv8851Number,
                 unit_of_measurement=UNIT_VOLT,
                 device_class=DEVICE_CLASS_VOLTAGE,
+                entity_category=ENTITY_CATEGORY_CONFIG,
+            ).extend(NUMBER_SCHEMA),
+            cv.Optional(CONF_INVERTER_MAXIMUM_POWER): number.number_schema(Inv8851Number,
+                unit_of_measurement=UNIT_WATT,
+                device_class=DEVICE_CLASS_POWER,
                 entity_category=ENTITY_CATEGORY_CONFIG,
             ).extend(NUMBER_SCHEMA),
             cv.Optional(CONF_OUTPUT_FREQUENCY): number.number_schema(Inv8851Number,

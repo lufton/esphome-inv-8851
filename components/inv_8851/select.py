@@ -33,6 +33,7 @@ CONF_PARALLEL_OPERATION = "parallel_operation"
 CONF_PHASE = "phase"
 CONF_POWER_BUZZER = "power_buzzer"
 CONF_POWERSAVE_MODE = "powersave_mode"
+CONF_WARNING_BUZER = "warning_buzer"
 
 OFF_ON_OPTIONS = ["Off", "On"]
 OPTIONS = {
@@ -53,6 +54,7 @@ OPTIONS = {
     CONF_PHASE: ["A", "B", "C"],
     CONF_POWER_BUZZER: OFF_ON_OPTIONS,
     CONF_POWERSAVE_MODE: OFF_ON_OPTIONS,
+    CONF_WARNING_BUZER: OFF_ON_OPTIONS,
 }
 
 Inv8851Select = inv_8851_ns.class_("Inv8851Select", select.Select, cg.Component)
@@ -110,6 +112,9 @@ CONFIG_SCHEMA = (
                 entity_category=ENTITY_CATEGORY_CONFIG
             ),
             cv.Optional(CONF_POWERSAVE_MODE): select.select_schema(Inv8851Select,
+                entity_category=ENTITY_CATEGORY_CONFIG
+            ),
+            cv.Optional(CONF_WARNING_BUZER): select.select_schema(Inv8851Select,
                 entity_category=ENTITY_CATEGORY_CONFIG
             ),
         }

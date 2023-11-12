@@ -1,6 +1,10 @@
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
+  comment: "Inverter DTU"
+  project:
+    name: "lufton.esphome-inv-8851"
+    version: 1.0.0
 
 logger:
 

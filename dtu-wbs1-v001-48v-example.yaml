@@ -1,4 +1,5 @@
 substitutions:
+  inverter_maximum_power: "6500"
   name: dtu-wbs1-v001
   friendly_name: DTU WBS1-V001
 
@@ -11,8 +12,13 @@ packages:
     ref: main
     files:
       - packages/core.yaml
-      - packages/entities.yaml
-      - packages/entities-48v.yaml
+      - packages/inverter.yaml
+      - packages/grid.yaml
+      - packages/battery.yaml
+      - packages/battery-48v.yaml
+      - packages/pv.yaml
+      - packages/parallel.yaml
+      - packages/bms-48v.yaml
       - packages/dtu_wbs1_v001.yaml
     refresh: 0s
 
