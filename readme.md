@@ -158,22 +158,22 @@ You can flash ESP32 or ESP8266 using this component the same way you flash your 
 | powersave_mode         	| Power save mode, will pulse output voltage to determine and start if load   is connected                   	| OFF<br>     ON                                                                                                      	| 04   	|
 
 ### Numbers
-| ID                             	| Description                                                                                                          	| Unit   	| Res. 	| Range                   	| Menu 	|
-|--------------------------------	|----------------------------------------------------------------------------------------------------------------------	|--------	|------	|-------------------------	|------	|
-| battery_back_to_util_voltage   	| Voltage point at witch inverter will switch to Grid in PV > Battery   > Grid mode                                    	| V      	| 0.1  	| 20…29.2<br>     40…58.4 	| 13   	|
-| battery_bulk_voltage           	| Fully charged battery voltage                                                                                        	| V      	| 0.1  	| 24…29.2<br>     48…58.4 	| 26   	|
-| battery_float_voltage          	| Floating charging mode voltage                                                                                       	| V      	| 0.1  	| 24…29.2<br>     48…58.4 	| 27   	|
-| battery_charge_cut_off_current 	| Charge current at witch inverted assumes that battery is fully charged   and switches into floating charging mode    	| A      	| 0.1  	| 2…20                    	| 12   	|
-| battery_cut_off_voltage        	| Minimum battery voltage, inverter will disconnect battery at this point                                              	| V      	| 0.1  	| 20…24<br>     40…48     	| 29   	|
-| battery_equalization_interval  	| How often battery equalization program will be triggered                                                             	| Day    	| 1    	| 0…90                    	| 37   	|
-| battery_equalization_time      	| How long battery equalization program will run                                                                       	| Minute 	| 1    	| 5…900                   	| 35   	|
-| battery_equalization_timeout   	| How long battery equalization program can run before terminating                                                     	| Minute 	| 1    	| 5…900                   	| 36   	|
-| battery_equalization_voltage   	| Battery equalization voltage                                                                                         	| V      	| 0.1  	| 25…29.5<br>     50…59   	| 34   	|
-| inverter_maximum_power         	| Inverter maximum output power                                                                                        	| W      	| 1    	| 0…4500<br>     0…6500   	| N/A  	|
-| output_frequency               	| Output frequency, that can be in range 50-55Hz for 50Hz mode and 60-55Hz   for 60Hz mode                             	| Hz     	| 1    	| 50-55<br>     60-55     	| N/A  	|
-| output_voltage                 	| Output voltage, resets to closest lower number that is multiple of 5   (234V → 230V, 229V → 225V) after exiting menu 	| V      	| 1    	| 100…240                 	| 08   	|
-| total_charge_current           	| Maximum battery charge current equals PV current + Grid current                                                      	| A      	| 0.1  	| 0…130<br>     0…150     	| 02   	|
-| util_charge_current            	| Maximum current used from Grid to charge battery                                                                     	| A      	| 0.1  	| 0…110<br>     0…140     	| 11   	|
+| ID                             	| Description                                                                                                          	| Unit 	| Res. 	| Range                   	| Menu 	|
+|--------------------------------	|----------------------------------------------------------------------------------------------------------------------	|------	|------	|-------------------------	|------	|
+| battery_back_to_util_voltage   	| Voltage point at witch inverter will switch to Grid in PV > Battery   > Grid mode                                    	| V   	| 0.1  	| 20…29.2<br>     40…58.4 	| 13   	|
+| battery_bulk_voltage           	| Fully charged battery voltage                                                                                        	| V   	| 0.1  	| 24…29.2<br>     48…58.4 	| 26   	|
+| battery_float_voltage          	| Floating charging mode voltage                                                                                       	| V   	| 0.1  	| 24…29.2<br>     48…58.4 	| 27   	|
+| battery_charge_cut_off_current 	| Charge current at witch inverted assumes that battery is fully charged   and switches into floating charging mode    	| A   	| 0.1  	| 2…20                    	| 12   	|
+| battery_cut_off_voltage        	| Minimum battery voltage, inverter will disconnect battery at this point                                              	| V   	| 0.1  	| 20…24<br>     40…48     	| 29   	|
+| battery_equalization_interval  	| How often battery equalization program will be triggered                                                             	| Day 	| 1    	| 0…90                    	| 37   	|
+| battery_equalization_time      	| How long battery equalization program will run                                                                       	| Min. 	| 1    	| 5…900                   	| 35   	|
+| battery_equalization_timeout   	| How long battery equalization program can run before terminating                                                     	| Min. 	| 1    	| 5…900                   	| 36   	|
+| battery_equalization_voltage   	| Battery equalization voltage                                                                                         	| V   	| 0.1  	| 25…29.5<br>     50…59   	| 34   	|
+| inverter_maximum_power         	| Inverter maximum output power                                                                                        	| W   	| 1    	| 0…4500<br>     0…6500   	| N/A  	|
+| output_frequency               	| Output frequency, that can be in range 50-55Hz for 50Hz mode and 60-55Hz   for 60Hz mode                             	| Hz  	| 1    	| 50…55<br>     60…55     	| N/A  	|
+| output_voltage                 	| Output voltage, resets to closest lower number that is multiple of 5   (234V → 230V, 229V → 225V) after exiting menu 	| V   	| 1    	| 100…240                 	| 08   	|
+| total_charge_current           	| Maximum battery charge current equals PV current + Grid current                                                      	| A   	| 0.1  	| 0…130<br>     0…150     	| 02   	|
+| util_charge_current            	| Maximum current used from Grid to charge battery                                                                     	| A   	| 0.1  	| 0…110<br>     0…140     	| 11   	|
 
 ## Original firmware dump
 [Here](https://github.com/lufton/esphome-inv-8851/blob/main/DTU.bin) you can find original firmware dump file. Restore procedure described in the last step of [Flashing DTU WBS1-V001](#flashing-dtu-wbs1-v001) section.
