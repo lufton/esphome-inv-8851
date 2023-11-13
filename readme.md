@@ -49,7 +49,7 @@ inv_8851:
 ```
 
 ## 24v vs 48v version
-24v and 48v files are different only in comfiguration of some entities witch has no sense for 24v version (bms_cell_09_voltage — bms_cell_16_voltage) and minimum/maximum values for some number entities (as they depend on voltage). So in theory flashing "wrong" configuration shouldn't make any harm to ESP or inverter.
+24v and 48v files are different only in configuration of some entities witch has no sense for 24v version (bms_cell_09_voltage — bms_cell_16_voltage) and minimum/maximum values for some number entities (as they depend on voltage). So in theory flashing "wrong" configuration shouldn't make any harm to ESP or inverter.
 
 ## ...-local.yaml
 This project build to be as simple is possible, so in most cases you woudn't need those files. Regular `.yaml` file will download latest stable version from this repository and use it upon build process. But if you want to customize configuration or you plan to change files in `packages` or `components` directories, than you probably want to use those.
@@ -66,7 +66,7 @@ Number entity `inverter_maximum_power` sets software limitaion for inverter's ma
 **Please make sure you understand what you're doing before adjusting this parameter.**
 
 ## Flashing DTU WBS1-V001
-You can flash WBS1-V001 using this component (use corresponding `...-example.yaml` file). This way you can use original DTU with much more comfortable and easy way. This configuration also supports onboard LED indication.
+You can flash WBS1-V001 using this component (use corresponding `dtu-wbs1-v001...-example.yaml` file). This way you can use original DTU with much more comfortable and easy way. This configuration also supports onboard LED indication.
 In order to flash original DTU follow next steps:
 1. Disassemble DTU (it has 4 screws in the corners under the foamy sticker on the bottom)
 2. Solder pin headers of jump wires to +5V, GND1, BOOT1, RXD1, TXD1 pads (they are labeled)
@@ -79,7 +79,7 @@ In order to flash original DTU follow next steps:
 `esptool.exe -p COM1 -b 460800 write_flash 0x0 DTU.bin`
 
 ## Flashing ESP32 or ESP8266
-You can flash ESP32 or ESP8266 using this component the same way you flash your other ESPHome project. Read [official guides](https://esphome.io/guides/) if you have any questions.
+You can flash ESP32 or ESP8266 using this component the same way you flash your other ESPHome projects. Read [official guides](https://esphome.io/guides/) if you have any questions.
 
 ## Available entities
 ### Sensors
