@@ -1,5 +1,16 @@
 # 8851 inverter protocol integration ESPHome component
 
+## Denial of Responsibility
+**Disclaimer:** This project is provided "as-is" without any warranty or support of any kind. By using this software, you agree that:
+1. **No Warranty:** The project is provided without any warranty, expressed or implied. The entire risk of using the project is assumed by you, the user.
+2. **No Support:** The author(s) of this project are under no obligation to provide support, updates, or maintenance. Issues and pull requests may be addressed at the sole discretion of the project contributors.
+3. **Use at Your Own Risk:** The project may involve experimental features or third-party dependencies, and the user is responsible for ensuring its compatibility with their system. The author(s) are not responsible for any damage, data loss, or other consequences that may arise from the use of this project.
+4. **No Guarantee of Compatibility:** The project may not be compatible with all environments, hardware, or software configurations. It is the user's responsibility to verify compatibility before use.
+5. **Security Considerations:** The project may not have undergone a comprehensive security review. Users are advised to exercise caution and not use this project in critical or security-sensitive applications.
+6. **Third-Party Dependencies:** This project may rely on third-party libraries, frameworks, or tools. The user is responsible for complying with the licenses and terms associated with these dependencies.
+
+By using this project, you acknowledge and agree to these terms. If you do not agree with these terms, do not use or contribute to this project.
+
 ## Compatible inverters
 * PowMr POW-HVM6.5K-48V (tested by [@lufton](https://github.com/lufton))
 * PowMr POW-HVM4.5K-24V
@@ -7,6 +18,14 @@
 
 ## Capabilities
 This component will let you monitor (sensors, binary sensors and text sensors) and control (numbers and selects) compatible inverter without need of installing Chinese software and depend on any third-party services.
+
+## Why to use this component
+* No need to use original software. Chinese mobile app doen't work stable, is slow and not reliable.
+* No need to send you data to custom server. All data sent from DTU with original firmware are stored with open access MQTT server. That is potential security breach, that can lead to data leak and even your inverter configuration changes witch can damage you hardware.
+* Some extra configuration parameters that are absent in the app, like `output_frequency`, `warning_buzzer`, `inverter_maximum_power`.
+* Possiblity to set some configuration parameters more accurately, like `battery_charge_cut_off_current`, `output_voltage`, `total_charge_current`, `util_charge_current`. You can set tham as any number from the range in comparison to inverter's menu where you can only select values from predefined options.
+* Simple integration with 3rd party services like Home Assistant.
+* Local automations.
 
 ### Minimal configuration
 ```yaml
@@ -34,6 +53,17 @@ inv_8851:
 
 ## ...-local.yaml
 This project build to be as simple is possible, so in most cases you woudn't need those files. Regular `.yaml` file will download latest stable version from this repository and use it upon build process. But if you want to customize configuration or you plan to change files in `packages` or `components` directories, than you probably want to use those.
+
+## inverter_maximum_power
+First of all there are two places you can find `inverter_maximum_power` parameter:
+* Under `substitutions` section of example files
+* Under `number` configuration section
+
+The reason for that parameter present in `substitutions` section is to limit `max_value` parameter for `inverter_maximum_power` number entity. This is needed to prevent user from setting to high value for that entity.
+
+Number entity `inverter_maximum_power` sets software limitaion for inverter's maximum power (total power inverter consumes from grid including battery charging power). Setting value that is higher than factory-default (4500W for 4.5kW inverter version and 6500W for 6.5kW inverter version) for that number entity can lead to potential damage. From other hand you can set software limitaion lower than factory-default to protect your inverter from working in conditions close to maximum possible and prolong it's life. In case of exceeding 110% of `inverter_maximum_power` value, inverter will turn off with error code of `07`.
+
+**Please make sure you understand what you're doing before adjusting this parameter.**
 
 ## Flashing DTU WBS1-V001
 You can flash WBS1-V001 using this component (use corresponding `...-example.yaml` file). This way you can use original DTU with much more comfortable and easy way. This configuration also supports onboard LED indication.
@@ -156,6 +186,7 @@ You can flash ESP32 or ESP8266 using this component the same way you flash your 
 | phase                  	| Witch phase inverter is connected to                                                                       	| A<br>     B<br>     C                                                                                               	| 15   	|
 | power_buzzer           	| Buzzer that beep every time Grid becomes unavailable                                                       	| OFF<br>     ON                                                                                                      	| 22   	|
 | powersave_mode         	| Power save mode, will pulse output voltage to determine and start if load   is connected                   	| OFF<br>     ON                                                                                                      	| 04   	|
+| warning_buzzer         	| Buzzer that beep every time inverter raise warning                                                         	| OFF<br>     ON                                                                                                      	| N/A  	|
 
 ### Numbers
 | ID                             	| Description                                                                                                          	| Unit 	| Res. 	| Range                   	| Menu 	|
