@@ -45,7 +45,7 @@ In order to flash original DTU follow next steps:
 `esptool.exe -p COM1 -b 460800 read_flash 0x0 0x400000 DTU.bin`
 5. Flash ESPHome with corresponding configuration
 6. Disconnect USB to TTL module, assemble DTU and connect to inverter
-7. In order to restore original firmware connect DTU and USB to TTL module with BOOT pin connected to GND and run command (replace `COM1` and `DTU.bin` with valid port number and firmware dump file backed up in step 4 path):<br>
+7. In order to restore original firmware connect DTU and USB to TTL module with BOOT1 pin connected to GND1 and run command (replace `COM1` and `DTU.bin` with valid port number and firmware dump file backed up in step 4 path):<br>
 `esptool.exe -p COM1 -b 460800 write_flash 0x0 DTU.bin`
 
 ## Flashing ESP32 or ESP8266
