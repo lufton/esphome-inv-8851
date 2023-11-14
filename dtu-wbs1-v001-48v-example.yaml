@@ -14,6 +14,7 @@ packages:
       - packages/core.yaml
       - packages/inverter.yaml
       - packages/grid.yaml
+      - packages/temperature.yaml
       - packages/battery.yaml
       - packages/battery-48v.yaml
       - packages/pv.yaml
