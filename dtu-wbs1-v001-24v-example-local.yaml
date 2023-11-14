@@ -10,6 +10,7 @@ packages:
   core: !include packages/core-local.yaml
   inverter: !include packages/inverter.yaml
   grid: !include packages/grid.yaml
+  temperature: !include packages/temperature.yaml
   battery: !include packages/battery.yaml
   battery-24v: !include packages/battery-24v.yaml
   pv: !include packages/pv.yaml
