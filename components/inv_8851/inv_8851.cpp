@@ -262,7 +262,7 @@ void Inv8851::publish_state_(const uint8_t *resp) {
     PUBLISH_STATE(this->inverter_current_sensor_, state->inv_current / 100.0f);
     PUBLISH_STATE(this->inverter_frequency_sensor_, state->inv_freq / 100.0f);
     PUBLISH_STATE(this->inverter_power_percentage_sensor_, state->inverter_watt_percent);
-    PUBLISH_STATE(this->inverter_software_version_sensor_, state->softvare_version);
+    PUBLISH_STATE(this->inverter_software_version_sensor_, state->software_version);
     PUBLISH_STATE(this->inverter_voltage_sensor_, state->inv_voltage / 10.0f);
     PUBLISH_STATE(this->inverter_voltage_dc_component_sensor_, state->inverter_voltage_dc_component);
     PUBLISH_STATE(this->load_apparent_power_sensor_, state->load_va);
@@ -295,7 +295,7 @@ void Inv8851::publish_config_(const uint8_t *resp) {
     PUBLISH_STATE(this->fault_record_select_, off_on_options[config->fault_record_enable]);
     PUBLISH_STATE(this->frequency_select_, frequency_options[config->frequency]);
     PUBLISH_STATE(this->grid_voltage_range_select_, grid_voltage_range_options[config->grid_voltage_range]);
-    PUBLISH_STATE(this->on_grid_select_, off_on_options[config->grid_enale]);
+    PUBLISH_STATE(this->on_grid_select_, off_on_options[config->grid_enable]);
     PUBLISH_STATE(this->output_energy_priority_select_, output_energy_priority_options[config->output_energy_priority]);
     PUBLISH_STATE(this->overload_restart_select_, off_on_options[config->output_OPP_auto_restart]);
     PUBLISH_STATE(this->overtemp_restart_select_, off_on_options[config->otp_auto_restart]);
@@ -334,7 +334,7 @@ void Inv8851::set_select_value(const std::string type, size_t index) {
   else if (type == "fault_record") this->config_.fault_record_enable = index;
   else if (type == "frequency") this->config_.frequency = index;
   else if (type == "grid_voltage_range") this->config_.grid_voltage_range = index;
-  else if (type == "on_grid") this->config_.grid_enale = index;
+  else if (type == "on_grid") this->config_.grid_enable = index;
   else if (type == "output_energy_priority") this->config_.output_energy_priority = index;
   else if (type == "overload_restart") this->config_.output_OPP_auto_restart = index;
   else if (type == "overtemp_restart") this->config_.otp_auto_restart = index;

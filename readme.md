@@ -156,7 +156,7 @@ You can flash ESP32 or ESP8266 using this component the same way you flash your 
 | pv_input                         	| Indicates if PV is connected                                      	|
 | pv_topology_initialization       	| Indicates if PV topology is initialized                           	|
 | system_initialization            	| Indicates if all inverter's systems are initialized               	|
-| system_power                     	| ? Indicates if system is powered either with grid, PV or battery  	|
+| system_power                     	| Indicates if inverter is turned on using button on left side      	|
 
 ### Text sensors
 | ID                	| Description             	|
