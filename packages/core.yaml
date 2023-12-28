@@ -5,6 +5,8 @@ esphome:
   project:
     name: "lufton.esphome-inv-8851"
     version: 1.0.0
+  libraries:
+    - leodesigner/PowMr_4500_regmap
 
 logger:
 
