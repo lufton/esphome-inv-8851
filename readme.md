@@ -208,6 +208,14 @@ You can flash ESP32 or ESP8266 using this component the same way you flash your 
 
 ## WBS1-V001 simplified schematics
 ![WBS1-V001 simplified schematics](resources/WBS1-V001.svg?raw=true "WBS1-V001")
+<details>
+  <summary>WBS1-V001 module pictures</summary>
+  <img alt="WBS1-V001" src="resources/WBS1-V001.jpg?raw=true" />
+  <img alt="WBS1-V001 screws" src="resources/WBS1-V001_screws.jpg?raw=true" />
+  <img alt="WBS1-V001 parts" src="resources/WBS1-V001_parts.jpg?raw=true" />
+  <img alt="WBS1-V001 PCB (top)" src="resources/WBS1-V001_PCB_top.jpg?raw=true" />
+  <img alt="WBS1-V001 PCB (bottom)" src="resources/WBS1-V001_PCB_bottom.jpg?raw=true" />
+</details>
 
 ## Original firmware dump
 [Here](https://github.com/lufton/esphome-inv-8851/blob/main/DTU.bin) you can find original firmware dump file. Restore procedure described in the last step of [Flashing DTU WBS1-V001](#flashing-dtu-wbs1-v001) section.
