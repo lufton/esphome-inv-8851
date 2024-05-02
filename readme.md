@@ -207,7 +207,7 @@ You can flash ESP32 or ESP8266 using this component the same way you flash your 
 | util_charge_current            	| Maximum current used from Grid to charge battery                                                                     	| A   	| 0.1  	| 0…110<br>     0…140     	| 11   	|
 
 ## WBS1-V001 simplified schematics
-![WBS1-V001 simplified schematics](resources/WBS1-V001.svg.jpg?raw=true "WBS1-V001")
+![WBS1-V001 simplified schematics](resources/WBS1-V001.svg?raw=true "WBS1-V001")
 
 ## Original firmware dump
 [Here](https://github.com/lufton/esphome-inv-8851/blob/main/DTU.bin) you can find original firmware dump file. Restore procedure described in the last step of [Flashing DTU WBS1-V001](#flashing-dtu-wbs1-v001) section.
