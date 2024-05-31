@@ -15,9 +15,9 @@ packages:
   temperature: !include packages/temperature.yaml
   battery: !include packages/battery.yaml
   battery-48v: !include packages/battery-48v.yaml
-  pv: !include packages/pv.yaml
-  parallel: !include packages/parallel.yaml
-  bms-48v: !include packages/bms-48v.yaml
+  # pv: !include packages/pv.yaml
+  # parallel: !include packages/parallel.yaml
+  # bms-48v: !include packages/bms-48v.yaml
 
 wifi:
   ssid: !secret wifi_ssid

@@ -10,7 +10,7 @@ namespace inv_8851 {
 const char *battery_type_options[] = { [AGM] = "AGM", [FLOODED] = "Flooded", [USER] = "User-defined", [LIB] = "Library" };
 const char *charge_energy_priority_options[] = { [CSO] = "PV & Grid", [SNU] = "PV > Grid", [OSO] = "PV only" };
 const char *frequency_options[] = { [FIFTY] = "50Hz", [SIXTY] = "60Hz" };
-const char *grid_voltage_range_options[] = { [APL] = "APL", [UPS] = "UPS" };
+const char *grid_voltage_range_options[] = { [UPS] = "UPS", [APL] = "APL" };
 const char *off_on_options[] = { [OFF] = "Off", [ON] = "On" };
 const char *output_energy_priority_options[] = { [SUB] = "PV > Grid > Battery", [SBU] = "PV > Battery > Grid" };
 const char *phase_options[] = { [A] = "A", [B] = "B", [C] = "C" };
@@ -35,13 +35,8 @@ void Inv8851::setup() {
 }
 
 void Inv8851::loop() {
-  if (this->available() == 0 || millis() - this->last_read_ < 100) return;
-  else if (this->available() > inv8851_state_pkt_len) {
-    ESP_LOGW(TAG, "There was a message with length %d, that is too long.", this->available());
-    this->clear_buffer_();
-    return;
-  } else this->last_read_ = millis();
-
+  if (millis() - this->last_read_ < 200) return;
+  this->last_read_ = millis();
   if (this->available() == inv8851_state_pkt_len) {
     uint8_t resp[inv8851_state_pkt_len];
     this->read_array(resp, inv8851_state_pkt_len);
@@ -60,7 +55,7 @@ void Inv8851::loop() {
       ESP_LOGV(TAG, "This is indeed a config response.");
       this->publish_config_(resp);
     } else ESP_LOGW(TAG, "This doesn't look like a config response.");
-  } else ESP_LOGW(TAG, "There was a message with length %d, that can't be parsed.", this->available());
+  } else this->clear_buffer_();
 }
 
 void Inv8851::update() {

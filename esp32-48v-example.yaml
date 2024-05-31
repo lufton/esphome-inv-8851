@@ -19,9 +19,9 @@ packages:
       - packages/temperature.yaml
       - packages/battery.yaml
       - packages/battery-48v.yaml
-      - packages/pv.yaml
-      - packages/parallel.yaml
-      - packages/bms-48v.yaml
+      # - packages/pv.yaml
+      # - packages/parallel.yaml
+      # - packages/bms-48v.yaml
     refresh: 0s
 
 wifi:

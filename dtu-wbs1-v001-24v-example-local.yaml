@@ -13,9 +13,9 @@ packages:
   temperature: !include packages/temperature.yaml
   battery: !include packages/battery.yaml
   battery-24v: !include packages/battery-24v.yaml
-  pv: !include packages/pv.yaml
-  parallel: !include packages/parallel.yaml
-  bms-24v: !include packages/bms-24v.yaml
+  # pv: !include packages/pv.yaml
+  # parallel: !include packages/parallel.yaml
+  # bms-24v: !include packages/bms-24v.yaml
   dtu_wbs1_v001: !include packages/dtu_wbs1_v001.yaml
 
 wifi:
