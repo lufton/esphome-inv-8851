@@ -17,9 +17,9 @@ packages:
       - packages/temperature.yaml
       - packages/battery.yaml
       - packages/battery-24v.yaml
-      - packages/pv.yaml
-      - packages/parallel.yaml
-      - packages/bms-24v.yaml
+      # - packages/pv.yaml
+      # - packages/parallel.yaml
+      # - packages/bms-24v.yaml
       - packages/dtu_wbs1_v001.yaml
     refresh: 0s
 

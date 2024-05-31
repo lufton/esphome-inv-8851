@@ -27,7 +27,7 @@ static const char *const TAG = "inv_8851";
 enum BatteryType { AGM = 0, FLOODED = 1, USER = 2, LIB = 3 };
 enum ChargeEnergyPriority { CSO = 0, SNU = 1, OSO = 2 };
 enum Frequency { FIFTY = 0, SIXTY = 1 };
-enum GridVoltageRange { APL = 0, UPS = 1 };
+enum GridVoltageRange { UPS = 0, APL = 1 };
 enum OffOn { OFF = 0, ON = 1 };
 enum OutputEnergyPriority { SUB = 0, SBU = 1 };
 enum Phase { A = 0, B = 1, C = 2 };
