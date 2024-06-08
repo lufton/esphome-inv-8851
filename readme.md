@@ -71,7 +71,7 @@ In order to flash original DTU follow next steps:
 1. Disassemble DTU (it has 4 screws in the corners under the foamy sticker on the bottom)
 2. Solder pin headers of jump wires to +5V, GND1, BOOT1, RXD1, TXD1 pads (they are labeled)
 3. Connect USB to TTL module VCC → +5V, RX → TXD1, TX → RXD1 and GND → GND1 with BOOT1 pin connected to GND1
-4. Dump and store original firmware using [esptool](https://github.com/espressif/esptool/releases/tag/v4.6.2) (replace `COM1` with valid port number):<br>
+4. Dump and store original firmware using [esptool](https://github.com/espressif/esptool/releases/latest) (replace `COM1` with valid port number):<br>
 `esptool.exe -p COM1 -b 460800 read_flash 0x0 0x400000 DTU.bin`
 5. Flash ESPHome with corresponding configuration
 6. Disconnect USB to TTL module, assemble DTU and connect to inverter
