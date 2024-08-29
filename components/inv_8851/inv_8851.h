@@ -24,6 +24,9 @@ namespace esphome {
 namespace inv_8851 {
 
 static const char *const TAG = "inv_8851";
+enum Protocol { INV8851_PROTOCOL, UNKNOWN_PROTOCOL };
+enum Command { READ_COMMAND, WRITE_COMMAND, UNKNOWN_COMMAND };
+enum Address { STATE_ADDRESS, CONFIG_ADDRESS, UNKNOWN_ADDRESS };
 enum BatteryType { AGM = 0, FLOODED = 1, USER = 2, LIB = 3 };
 enum ChargeEnergyPriority { CSO = 0, SNU = 1, OSO = 2 };
 enum Frequency { FIFTY = 0, SIXTY = 1 };
@@ -162,7 +165,7 @@ class Inv8851 : public PollingComponent, public uart::UARTDevice {
   void dump_config() override;
 
   void set_select_value(const std::string type, size_t index);
-  
+
   void set_number_value(const std::string type, float value);
 
  protected:
@@ -171,14 +174,26 @@ class Inv8851 : public PollingComponent, public uart::UARTDevice {
 
   void clear_buffer_();
 
-  bool is_crc_valid_(uint8_t *raw, uint8_t length);
+  Protocol read_protocol_();
+
+  Command read_command_();
+
+  Address read_address_();
+
+  esphome::optional<uint16_t> read_data_size_();
+
+  esphome::optional<std::vector<uint8_t>>read_data_(const uint16_t size);
+
+  bool read_crc16_(const uint8_t *data, const uint8_t len);
+
+  void write_config_();
 
   void request_state_();
-  
+
   void request_config_();
 
   void publish_state_(const uint8_t *resp);
-  
+
   void publish_config_(const uint8_t *resp);
 
   inv8851_config_s config_;
