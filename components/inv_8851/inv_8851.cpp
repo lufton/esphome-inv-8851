@@ -7,6 +7,17 @@
 namespace esphome {
 namespace inv_8851 {
 
+const uint8_t protocol_size = 2;
+const uint8_t command_size = 2;
+const uint8_t address_size = 2;
+const uint8_t data_size_size = 2;
+const uint8_t header_size = protocol_size + command_size + address_size + data_size_size;
+const uint8_t crc_size = 2;
+const uint8_t inv8851_protocol[protocol_size] = {0x88, 0x51};
+const uint8_t read_command[command_size] = {0x00, 0x03};
+const uint8_t write_command[command_size] = {0x00, 0x10};
+const uint8_t state_address[address_size] = {0x00, 0x00};
+const uint8_t config_address[address_size] = {0x02, 0x00};
 const char *battery_type_options[] = { [AGM] = "AGM", [FLOODED] = "Flooded", [USER] = "User-defined", [LIB] = "Library" };
 const char *charge_energy_priority_options[] = { [CSO] = "PV & Grid", [SNU] = "PV > Grid", [OSO] = "PV only" };
 const char *frequency_options[] = { [FIFTY] = "50Hz", [SIXTY] = "60Hz" };
@@ -21,12 +32,127 @@ void Inv8851::clear_buffer_() {
   this->last_read_ = millis();
 }
 
-bool Inv8851::is_crc_valid_(uint8_t *raw, uint8_t length) {
-  uint16_t computed_crc = crc16(raw, length - 2);
-  uint16_t remote_crc = raw[length - 1] << 8 | raw[length - 2];
-  if (computed_crc == remote_crc) ESP_LOGV(TAG, "CRC sum is valid.");
-  else ESP_LOGE(TAG, "CRC sum is invalid, check your wiring.");
-  return computed_crc == remote_crc;
+uint16_t convert_le_(const uint8_t* data) {
+  return data[1] << 8 | data[0];
+}
+
+std::string byte_array_to_string(const uint8_t *data, const uint16_t len) {
+  std::string hex_string;
+  for (size_t i = 0; i < len; ++i) {
+    char buf[5];
+    snprintf(buf, sizeof(buf), "%02X ", data[i]);
+    hex_string += buf;
+  }
+  return hex_string;
+}
+
+Protocol Inv8851::read_protocol_() {
+  uint8_t data[protocol_size];
+  if (!this->read_array(data, protocol_size)) {
+    ESP_LOGW(TAG, "Can't read protocol from buffer");
+    return UNKNOWN_PROTOCOL;
+  }
+  ESP_LOGV(TAG, "Protocol: %02X %02X", data[0], data[1]);
+  if (memcmp(data, inv8851_protocol, protocol_size) == 0) {
+    ESP_LOGVV(TAG, "Protocol matches expected %02X %02X", inv8851_protocol[0], inv8851_protocol[1]);
+    return INV8851_PROTOCOL;
+  }
+  ESP_LOGW(TAG, "Protocol %02X %02X doesn't match expected %02X %02X", data[0], data[1], inv8851_protocol[0], inv8851_protocol[1]);
+  return UNKNOWN_PROTOCOL;
+}
+
+Command Inv8851::read_command_() {
+  uint8_t data[protocol_size];
+  if (!this->read_array(data, command_size)) {
+    ESP_LOGW(TAG, "Can't read command from buffer");
+    return UNKNOWN_COMMAND;
+  }
+  ESP_LOGV(TAG, "Command: %02X %02X", data[0], data[1]);
+  if (memcmp(data, read_command, command_size) == 0) {
+    ESP_LOGV(TAG, "This is read command");
+    return READ_COMMAND;
+  } else if (memcmp(data, write_command, command_size) == 0) {
+    ESP_LOGV(TAG, "This is write command");
+    return WRITE_COMMAND;
+  }
+  ESP_LOGW(TAG, "%02X %02X is neither read nor write command", data[0], data[1]);
+  return UNKNOWN_COMMAND;
+}
+
+Address Inv8851::read_address_() {
+  uint8_t data[address_size];
+  if (!this->read_array(data, address_size)) {
+    ESP_LOGW(TAG, "Can't read address from buffer");
+    return UNKNOWN_ADDRESS;
+  }
+  ESP_LOGV(TAG, "Address: %02X %02X", data[0], data[1]);
+  if (memcmp(data, state_address, address_size) == 0) {
+    ESP_LOGV(TAG, "This is state address");
+    return STATE_ADDRESS;
+  } else if (memcmp(data, config_address, address_size) == 0) {
+    ESP_LOGV(TAG, "This is config address");
+    return CONFIG_ADDRESS;
+  }
+  ESP_LOGW(TAG, "%02X %02X is neither state or config address", data[0], data[1]);
+  return UNKNOWN_ADDRESS;
+}
+
+esphome::optional<uint16_t> Inv8851::read_data_size_() {
+  uint8_t data[data_size_size];
+  if (!this->read_array(data, data_size_size)) {
+    ESP_LOGW(TAG, "Can't read data size from buffer");
+    return {};
+  }
+  auto data_size = convert_le_(data);
+  ESP_LOGV(TAG, "Data size: %d", data_size);
+  return data_size;
+}
+
+esphome::optional<std::vector<uint8_t>> Inv8851::read_data_(const uint16_t size) {
+  while (this->available() < size + crc_size && millis() - this->last_read_ < 1000) {
+    ESP_LOGVV(TAG, "Available %d < data size %d, waiting for data to arrive", this->available(), size);
+    delay(50);
+  }
+  if (this->available() < size + crc_size) {
+    ESP_LOGW(TAG, "Can't read data block from buffer");
+    return {};
+  }
+  std::vector<uint8_t> data(size);
+  if (!this->read_array(data.data(), size)) {
+    ESP_LOGW(TAG, "Can't read data block from buffer");
+    return {};
+  }
+  ESP_LOGV(TAG, "Data: %s", byte_array_to_string(data.data(), size).c_str());
+  return data;
+}
+
+bool Inv8851::read_crc16_(const uint8_t *data, const uint8_t len) {
+  uint8_t crc16_data[crc_size];
+  if (!this->read_array(crc16_data, crc_size)) {
+    ESP_LOGW(TAG, "Can't read CRC16 from buffer");
+    return false;
+  }
+  auto actual_crc16 = convert_le_(crc16_data);
+  ESP_LOGV(TAG, "CRC16: 0x%04X (%d)", actual_crc16, actual_crc16);
+  auto expected_crc16 = crc16(data, len);
+  if (actual_crc16 == expected_crc16) {
+    ESP_LOGVV(TAG, "Actual CRC16 0x%04X (%d) matches expected CRC16 0x%04X (%d)", actual_crc16, actual_crc16, expected_crc16, expected_crc16);
+    return true;
+  }
+  ESP_LOGW(TAG, "Actual CRC16 0x%04X (%d) doesn't match expected CRC16 0x%04X (%d)", actual_crc16, actual_crc16, expected_crc16, expected_crc16);
+  ESP_LOGW(TAG, "Input for CRC16: %s", byte_array_to_string(data, len).c_str());
+  return false;
+}
+
+void Inv8851::write_config_() {
+  inv8851_config_s config;
+  uint8_t *buff = (uint8_t *) &config;
+  memcpy(&config, &this->config_, inv8851_config_pkt_len);
+  config.command = INV8851_CONFIG_CMD_WRITE;
+  config.data_size = inv8851_config_pkt_len - header_size - crc_size;
+  config.crc = crc16(buff, inv8851_config_pkt_len - crc_size);
+  this->write_array(buff, inv8851_config_pkt_len);
+  publish_config_((uint8_t *) &config);
 }
 
 void Inv8851::setup() {
@@ -35,27 +161,28 @@ void Inv8851::setup() {
 }
 
 void Inv8851::loop() {
-  if (millis() - this->last_read_ < 200) return;
+  if (millis() - this->last_read_ < 200 || this->available() < header_size) return;
   this->last_read_ = millis();
-  if (this->available() == inv8851_state_pkt_len) {
-    uint8_t resp[inv8851_state_pkt_len];
-    this->read_array(resp, inv8851_state_pkt_len);
-    ESP_LOGV(TAG, "Received %d bytes of state response.", inv8851_state_pkt_len);
-    if (!this->is_crc_valid_(resp, inv8851_state_pkt_len)) return;
-    if (resp[9] << 24 | resp[10] << 16 | resp[11] << 8 | resp[12] == 0x0000) {
-      ESP_LOGV(TAG, "This is indeed a state response.");
-      this->publish_state_(resp);
-    } else ESP_LOGW(TAG, "This doesn't look like a state response.");
-  } else if (this->available() == inv8851_config_pkt_len) {
-    uint8_t resp[inv8851_config_pkt_len];
-    this->read_array(resp, inv8851_config_pkt_len);
-    ESP_LOGV(TAG, "Received %d bytes of config response.", inv8851_config_pkt_len);
-    if (!this->is_crc_valid_(resp, inv8851_config_pkt_len)) return;
-    if (resp[9] << 24 | resp[10] << 16 | resp[11] << 8 | resp[12] == 0x0200) {
-      ESP_LOGV(TAG, "This is indeed a config response.");
-      this->publish_config_(resp);
-    } else ESP_LOGW(TAG, "This doesn't look like a config response.");
-  } else this->clear_buffer_();
+  auto protocol = this->read_protocol_();
+  if (protocol == UNKNOWN_PROTOCOL) return this->clear_buffer_();
+  auto command = this->read_command_();
+  if (command == UNKNOWN_COMMAND || command == WRITE_COMMAND) return this->clear_buffer_();
+  auto address = this->read_address_();
+  if (address == UNKNOWN_ADDRESS) return this->clear_buffer_();
+  auto data_size = this->read_data_size_();
+  if (!data_size.has_value()) return this->clear_buffer_();
+  auto data = this->read_data_(data_size.value());
+  if (!data.has_value()) return this->clear_buffer_();
+  uint8_t *packet = new uint8_t[header_size + data_size.value()];
+  uint8_t offset = 0;
+  std::memcpy(packet + offset, inv8851_protocol, protocol_size); offset += protocol_size;
+  std::memcpy(packet + offset, read_command, command_size); offset += command_size;
+  std::memcpy(packet + offset, address == STATE_ADDRESS ? state_address : config_address, address_size); offset += address_size;
+  std::memcpy(packet + offset, reinterpret_cast<uint8_t*>(&data_size.value()), data_size_size); offset += data_size_size;
+  std::memcpy(packet + offset, data.value().data(), data_size.value()); offset += data_size.value();
+  if (!this->read_crc16_(packet, header_size + data_size.value())) return this->clear_buffer_();
+  if (address == STATE_ADDRESS) this->publish_state_(packet);
+  else this->publish_config_(packet);
 }
 
 void Inv8851::update() {
@@ -276,7 +403,7 @@ void Inv8851::publish_state_(const uint8_t *resp) {
     PUBLISH_STATE(this->pv_voltage_sensor_, state->pv_voltage / 10.0f);
   #endif
 }
-  
+
 void Inv8851::publish_config_(const uint8_t *resp) {
   memcpy(&this->config_, resp, inv8851_config_pkt_len);
   inv8851_config_s *config = (inv8851_config_s *) resp;
@@ -340,13 +467,7 @@ void Inv8851::set_select_value(const std::string type, size_t index) {
   else if (type == "warning_buzer") this->config_.warning_flag_buzer_on = index;
   else return;
 
-  inv8851_config_s config;
-  uint8_t *buff = (uint8_t *) &config;
-  memcpy(&config, &this->config_, inv8851_config_pkt_len);
-  config.command = INV8851_CONFIG_CMD_WRITE;
-  config.crc = crc16(buff, inv8851_config_pkt_len - 2);
-  this->write_array(buff, inv8851_config_pkt_len);
-  publish_config_((uint8_t *) &config);
+  this->write_config_();
 }
 
 void Inv8851::set_number_value(const std::string type, float value) {
@@ -366,13 +487,7 @@ void Inv8851::set_number_value(const std::string type, float value) {
   else if (type == "util_charge_current") this->config_.util_chg_current = value * 10.0f;
   else return;
 
-  inv8851_config_s config;
-  uint8_t *buff = (uint8_t *) &config;
-  memcpy(&config, &this->config_, inv8851_config_pkt_len);
-  config.command = INV8851_CONFIG_CMD_WRITE;
-  config.crc = crc16(buff, inv8851_config_pkt_len - 2);
-  this->write_array(buff, inv8851_config_pkt_len);
-  publish_config_((uint8_t *) &config);
+  this->write_config_();
 }
 
 }  // namespace inv_8851

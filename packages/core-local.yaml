@@ -9,6 +9,7 @@ esphome:
     - leodesigner/PowMr_4500_regmap
 
 logger:
+  level: DEBUG
 
 captive_portal:
 
@@ -17,6 +18,13 @@ uart:
     baud_rate: 9600
     tx_pin: ${uart_tx_pin}
     rx_pin: ${uart_rx_pin}
+    debug:
+      direction: BOTH
+      dummy_receiver: false
+      after:
+        delimiter: "\n"
+      sequence:
+        - lambda: UARTDebug::log_hex(direction, bytes, ' ');
 
 external_components:
   - source: components
