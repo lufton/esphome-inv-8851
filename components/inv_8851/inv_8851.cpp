@@ -110,8 +110,8 @@ esphome::optional<uint16_t> Inv8851::read_data_size_() {
 
 esphome::optional<std::vector<uint8_t>> Inv8851::read_data_(const uint16_t size) {
   while (this->available() < size + crc_size && millis() - this->last_read_ < 1000) {
-    ESP_LOGVV(TAG, "Available %d < data size %d, waiting for data to arrive", this->available(), size);
-    delay(50);
+    ESP_LOGVV(TAG, "Buffer available data size (%d bytes) is less than expected data size (%d bytes), waiting for data to arrive", this->available(), size);
+    delay(10);
   }
   if (this->available() < size + crc_size) {
     ESP_LOGW(TAG, "Can't read data block from buffer");
@@ -161,7 +161,7 @@ void Inv8851::setup() {
 }
 
 void Inv8851::loop() {
-  if (millis() - this->last_read_ < 200 || this->available() < header_size) return;
+  if (millis() - this->last_read_ < 100 || this->available() < inv8851_config_pkt_len) return delay(10);
   this->last_read_ = millis();
   auto protocol = this->read_protocol_();
   if (protocol == UNKNOWN_PROTOCOL) return this->clear_buffer_();
