@@ -1,5 +1,6 @@
 substitutions:
   inverter_maximum_power: "6500"
+  version: "1"
   name: dtu-wbs1-v001
   friendly_name: DTU WBS1-V001
 

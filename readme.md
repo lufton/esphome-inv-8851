@@ -33,6 +33,7 @@ uart:
   - baud_rate: 9600
 
 inv_8851:
+  version: 1 # read about this parameter below
 
 sensor:
   - platform: inv_8851
@@ -42,11 +43,19 @@ sensor:
 ```
 Full list of available entities [is here](#available-entities).
 
-The only configuration you may need to set is `update_interval` (witch tells how often to request state and configuration from inverter, default value is 5s and should suite most situations) of `inv_8851` component.
+### Options
+There are several options you may need to set:
+
+* `update_interval`
+* `version`
+
+`update_interval` tells how often to request state and configuration from inverter, default value is 5s and should suite most situations.
 ```yaml
 inv_8851:
   update_interval: 30s
 ```
+
+`version` should be one of `1` (confirmed firmware version: 0005) or `2` (confirmed firmware version: 8100). Right now there are several protocol versions. They are pretty similar except they have a bit different packets length. `144/90` bytes for version=1 and `148/94` bytes for version=2 (state and config data block length respectively). If you experience problems with changing parameters it could mean that you should try other value (you can use `substitutions→version` parameter). It's only my guess, but it looks like version 1 is not compatible with newer firmware, so try using version 2 for newer models. Also you should see warning messages in logs if you peaked wrong version.
 
 ## 24v vs 48v version
 24v and 48v files are different only in configuration of some entities witch has no sense for 24v version (bms_cell_09_voltage — bms_cell_16_voltage) and minimum/maximum values for some number entities (as they depend on voltage). So in theory flashing "wrong" configuration shouldn't make any harm to ESP or inverter.
