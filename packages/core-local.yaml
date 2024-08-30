@@ -9,7 +9,29 @@ esphome:
     - leodesigner/PowMr_4500_regmap
 
 logger:
-  level: DEBUG
+  level: VERY_VERBOSE
+  logs:
+    api: NONE
+    api.connection: NONE
+    api.service: NONE
+    api.socket: NONE
+    app: NONE
+    captive_portal: NONE
+    component: NONE
+    esphome.ota: NONE
+    gpio.output: NONE
+    light: NONE
+    logger: NONE
+    mdns: NONE
+    number: NONE
+    safe_mode: NONE
+    scheduler: NONE
+    script: NONE
+    select: NONE
+    sensor: NONE
+    text_sensor: NONE
+    uart.arduino_esp32: NONE
+    wifi: NONE
 
 captive_portal:
 
@@ -30,4 +52,5 @@ external_components:
   - source: components
 
 inv_8851:
+  version: ${version}
   update_interval: 5s

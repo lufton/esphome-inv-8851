@@ -1,3 +1,4 @@
+#include "esphome/core/defines.h"
 #include "inv_8851.h"
 #include "esphome/core/log.h"
 #include "esphome/components/uart/uart_component.h"
@@ -13,6 +14,8 @@ const uint8_t address_size = 2;
 const uint8_t data_size_size = 2;
 const uint8_t header_size = protocol_size + command_size + address_size + data_size_size;
 const uint8_t crc_size = 2;
+const uint8_t inv8851_state_data_size = inv8851_state_pkt_len - header_size - crc_size;
+const uint8_t inv8851_config_data_size = inv8851_config_pkt_len - header_size - crc_size;
 const uint8_t inv8851_protocol[protocol_size] = {0x88, 0x51};
 const uint8_t read_command[command_size] = {0x00, 0x03};
 const uint8_t write_command[command_size] = {0x00, 0x10};
@@ -36,7 +39,7 @@ uint16_t convert_le_(const uint8_t* data) {
   return data[1] << 8 | data[0];
 }
 
-std::string byte_array_to_string(const uint8_t *data, const uint16_t len) {
+std::string bytes_to_string(const uint8_t *data, const uint16_t len) {
   std::string hex_string;
   for (size_t i = 0; i < len; ++i) {
     char buf[5];
@@ -122,7 +125,7 @@ esphome::optional<std::vector<uint8_t>> Inv8851::read_data_(const uint16_t size)
     ESP_LOGW(TAG, "Can't read data block from buffer");
     return {};
   }
-  ESP_LOGV(TAG, "Data: %s", byte_array_to_string(data.data(), size).c_str());
+  ESP_LOGV(TAG, "Data: %s", bytes_to_string(data.data(), size).c_str());
   return data;
 }
 
@@ -140,7 +143,7 @@ bool Inv8851::read_crc16_(const uint8_t *data, const uint8_t len) {
     return true;
   }
   ESP_LOGW(TAG, "Actual CRC16 0x%04X (%d) doesn't match expected CRC16 0x%04X (%d)", actual_crc16, actual_crc16, expected_crc16, expected_crc16);
-  ESP_LOGW(TAG, "Input for CRC16: %s", byte_array_to_string(data, len).c_str());
+  ESP_LOGW(TAG, "Input for CRC16: %s", bytes_to_string(data, len).c_str());
   return false;
 }
 
@@ -161,7 +164,7 @@ void Inv8851::setup() {
 }
 
 void Inv8851::loop() {
-  if (millis() - this->last_read_ < 100 || this->available() < inv8851_config_pkt_len) return delay(10);
+  if (millis() - this->last_read_ < 100 || this->available() < 100) return delay(10);
   this->last_read_ = millis();
   auto protocol = this->read_protocol_();
   if (protocol == UNKNOWN_PROTOCOL) return this->clear_buffer_();
@@ -171,6 +174,22 @@ void Inv8851::loop() {
   if (address == UNKNOWN_ADDRESS) return this->clear_buffer_();
   auto data_size = this->read_data_size_();
   if (!data_size.has_value()) return this->clear_buffer_();
+  if (address == STATE_ADDRESS && data_size.value() != inv8851_state_data_size)
+    ESP_LOGW(
+      TAG,
+      "It looks like your inverter has version other than defined (%d). Expected state data size for this version is %d, but %d provided. Consider setting version parameter of inv_8851 component to something else.",
+      INV8851_VERSION,
+      inv8851_state_data_size,
+      data_size.value()
+    );
+  if (address == CONFIG_ADDRESS && data_size.value() != inv8851_config_data_size)
+    ESP_LOGW(
+      TAG,
+      "It looks like your inverter has version other than defined (%d). Expected config data size for this version is %d, but %d provided. Consider setting version parameter of inv_8851 component to something else.",
+      INV8851_VERSION,
+      inv8851_config_data_size,
+      data_size.value()
+    );
   auto data = this->read_data_(data_size.value());
   if (!data.has_value()) return this->clear_buffer_();
   uint8_t *packet = new uint8_t[header_size + data_size.value()];

@@ -1,5 +1,6 @@
 substitutions:
   inverter_maximum_power: "6500"
+  version: "2"
   name: inverter
   friendly_name: Inverter
   uart_tx_pin: GPIO16

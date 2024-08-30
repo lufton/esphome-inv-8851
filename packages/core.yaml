@@ -23,4 +23,5 @@ external_components:
     refresh: 0s
 
 inv_8851:
+  add_extra_fields: ${add_extra_fields}
   update_interval: 5s
