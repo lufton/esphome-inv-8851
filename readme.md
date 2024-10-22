@@ -1,7 +1,9 @@
 # 8851 inverter protocol integration ESPHome component
 
 ## Denial of Responsibility
-**Disclaimer:** This project is provided "as-is" without any warranty or support of any kind. By using this software, you agree that:
+
+**Disclaimer:** Messing up with inverter parameters could lead to inverter or battery failure. Please make sure you understand what you are doing. This project is provided "as-is" without any warranty or support of any kind. By using this software, you agree that:
+
 1. **No Warranty:** The project is provided without any warranty, expressed or implied. The entire risk of using the project is assumed by you, the user.
 2. **No Support:** The author(s) of this project are under no obligation to provide support, updates, or maintenance. Issues and pull requests may be addressed at the sole discretion of the project contributors.
 3. **Use at Your Own Risk:** The project may involve experimental features or third-party dependencies, and the user is responsible for ensuring its compatibility with their system. The author(s) are not responsible for any damage, data loss, or other consequences that may arise from the use of this project.
@@ -12,14 +14,17 @@
 By using this project, you acknowledge and agree to these terms. If you do not agree with these terms, do not use or contribute to this project.
 
 ## Compatible inverters
+
 * PowMr POW-HVM6.5K-48V (tested by [@lufton](https://github.com/lufton))
 * PowMr POW-HVM4.5K-24V
 * Simular inverters that utilize the same DTU (WBS1-V001)
 
 ## Capabilities
+
 This component will let you monitor (sensors, binary sensors and text sensors) and control (numbers and selects) compatible inverter without need of installing Chinese software and depend on any third-party services.
 
 ## Why to use this component
+
 * No need to use original software. Chinese mobile app doen't work stable, is slow and not reliable.
 * No need to send you data to custom server. All data sent from DTU with original firmware are stored with open access MQTT server. That is potential security breach, that can lead to data leak and even your inverter configuration changes witch can damage you hardware.
 * Some extra configuration parameters that are absent in the app, like `output_frequency`, `warning_buzzer`, `inverter_maximum_power`.
@@ -28,6 +33,7 @@ This component will let you monitor (sensors, binary sensors and text sensors) a
 * Local automations.
 
 ### Minimal configuration
+
 ```yaml
 uart:
   - baud_rate: 9600
@@ -41,15 +47,18 @@ sensor:
       name: "Battery voltage"
     ...
 ```
+
 Full list of available entities [is here](#available-entities).
 
 ### Options
+
 There are several options you may need to set:
 
 * `update_interval`
 * `version`
 
 `update_interval` tells how often to request state and configuration from inverter, default value is 5s and should suite most situations.
+
 ```yaml
 inv_8851:
   update_interval: 30s
@@ -58,13 +67,17 @@ inv_8851:
 `version` should be one of `1` (confirmed firmware version: 0005) or `2` (confirmed firmware version: 8100). Right now there are several protocol versions. They are pretty similar except they have a bit different packets length. `144/90` bytes for version=1 and `148/94` bytes for version=2 (state and config data block length respectively). If you experience problems with changing parameters it could mean that you should try other value (you can use `substitutions→version` parameter). It's only my guess, but it looks like version 1 is not compatible with newer firmware, so try using version 2 for newer models. Also you should see warning messages in logs if you peaked wrong version.
 
 ## 24v vs 48v version
+
 24v and 48v files are different only in configuration of some entities witch has no sense for 24v version (bms_cell_09_voltage — bms_cell_16_voltage) and minimum/maximum values for some number entities (as they depend on voltage). So in theory flashing "wrong" configuration shouldn't make any harm to ESP or inverter.
 
 ## ...-local.yaml
-This project build to be as simple is possible, so in most cases you woudn't need those files. Regular `.yaml` file will download latest stable version from this repository and use it upon build process. But if you want to customize configuration or you plan to change files in `packages` or `components` directories, than you probably want to use those.
+
+This project build to be as simple is possible, so in most cases you woudn't need those files. Regular `.yaml` file will download latest stable version from this repository and use it upon build process. But if you want to customize configuration or you plan to change files in `packages` or `components` directories, than you probably want to use those. Also `-local.yaml` files include debugging by default.
 
 ## inverter_maximum_power
+
 First of all there are two places you can find `inverter_maximum_power` parameter:
+
 * Under `substitutions` section of example files
 * Under `number` configuration section
 
@@ -75,8 +88,10 @@ Number entity `inverter_maximum_power` sets software limitaion for inverter's ma
 **Please make sure you understand what you're doing before adjusting this parameter.**
 
 ## Flashing DTU WBS1-V001
+
 You can flash WBS1-V001 using this component (use corresponding `dtu-wbs1-v001...-example.yaml` file). This way you can use original DTU with much more comfortable and easy way. This configuration also supports onboard LED indication.
 In order to flash original DTU follow next steps:
+
 1. Disassemble DTU (it has 4 screws in the corners under the foamy sticker on the bottom)
 2. Solder pin headers of jump wires to +5V, GND1, BOOT1, RXD1, TXD1 pads (they are labeled)
 3. Connect USB to TTL module VCC → +5V, RX → TXD1, TX → RXD1 and GND → GND1 with BOOT1 pin connected to GND1
@@ -88,10 +103,28 @@ In order to flash original DTU follow next steps:
 `esptool.exe -p COM1 -b 460800 write_flash 0x0 DTU.bin`
 
 ## Flashing ESP32 or ESP8266
+
 You can flash ESP32 or ESP8266 using this component the same way you flash your other ESPHome projects. Read [official guides](https://esphome.io/guides/) if you have any questions.
 
+## Debugging
+
+If you have data retrival issues consider enabling debugging. In order to do so:
+
+1. Clone this repo locally ```git clone https://github.com/lufton/esphome-inv-8851.git```
+2. Change `secrets.yaml` file accordingly
+3. Flash your device with `...-local.yaml` file that matches your hardware
+4. Check sireal port output, you should see:
+    * Packets sent (`>>> 88 51 ...`) to inverter (should be present in any case)
+    * Packets received (`<<< 88 51 ...`) from inverter (could be missing if there is an issue with communication between inverter and ESP8266/ESP32)
+5. Packets should start with `88 51 ...` (that's why this project and protocol was called `8851`):
+    * If you see incoming packets witch starts with `88 51 ...`, then it means your connection is correct, even though if you don't receive any values from inverter. That could mean you have other protocol revision witch could be analized and implemented. In this case just [create an issue](https://github.com/lufton/esphome-inv-8851/issues/new/choose) with your findings.
+    * If you see incoming packets witch starts with somesing else, then it means you definetly have an issue with wiring and noise. Check connection once again and try to use shorter wires.
+    * If you don't see any incoming packets, then it could mean that there is something wrong with wiring or hardware. Check connection once again and make sure hardware you use is working corectly.
+
 ## Available entities
+
 ### Sensors
+
 | ID                                 	| Description                                                                                      	| Unit 	| Res. 	|
 |------------------------------------	|--------------------------------------------------------------------------------------------------	|------	|------	|
 | battery_charge_current             	| Maximum current to charge battery. It will start decreasing when battery enter absorption stage. 	| A    	| 0.1  	|
