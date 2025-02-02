@@ -1,0 +1,41 @@
+substitutions:
+  inverter_maximum_power: "4500"
+  version: "2"
+  name: dtu-wbs1-v001
+  friendly_name: Wi-Fi Plug Pro-05
+
+esp32:
+  board: d1_mini
+
+packages:
+  inv_8851:
+    url: https://github.com/lufton/esphome-inv-8851
+    ref: main
+    files:
+      - packages/core.yaml
+      - packages/inverter.yaml
+      - packages/grid.yaml
+      - packages/temperature.yaml
+      - packages/battery.yaml
+      - packages/battery-24v.yaml
+      # - packages/pv.yaml
+      # - packages/parallel.yaml
+      # - packages/bms-24v.yaml
+      - packages/wifi-plug-pro-05.yaml
+    refresh: 0s
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  ap:
+    ssid: ${friendly_name}
+    password: !secret ap_password
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota:
+  - platform: esphome
+    password: !secret ota_password

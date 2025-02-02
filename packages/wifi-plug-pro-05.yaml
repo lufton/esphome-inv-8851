@@ -1,0 +1,96 @@
+substitutions:
+  uart_tx_pin: GPIO1
+  uart_rx_pin: GPIO3
+
+esphome:
+  on_boot:
+    then:
+      - light.turn_off: srv_led
+
+globals:
+  - id: updating_ota
+    type: bool
+    initial_value: 'false'
+
+ota:
+  on_begin:
+    - globals.set:
+        id: updating_ota
+        value: 'true'
+    - while:
+        condition:
+          lambda: return id(updating_ota);
+        then:
+          - light.turn_on: srv_led
+          - delay: 200ms
+          - light.turn_off: srv_led
+          - delay: 200ms
+  on_end:
+    - globals.set:
+        id: updating_ota
+        value: 'false'
+
+interval:
+  - interval: 1s
+    then:
+      - if:
+          condition: wifi.connected
+          then:
+            if:
+              condition:
+                - light.is_off: net_led
+              then:
+                - light.turn_on: net_led
+          else:
+            - light.turn_on: net_led
+            - delay: 500ms
+            - light.turn_off: net_led
+
+  - interval: 1s
+    then:
+      switch.toggle: keep_alive_switch
+
+uart:
+  - id: !extend inv_8851_uart
+    debug:
+      sequence:
+        - script.execute: blink_comm_led
+
+script:
+  - id: blink_comm_led
+    mode: restart
+    then:
+      - light.turn_on: comm_led
+      - delay: 200ms
+      - light.turn_off: comm_led
+  - id: blink_update_ota_led
+    mode: single
+    then:
+
+
+output:
+  - platform: gpio
+    id: comm_led_output
+    pin: GPIO5
+  - platform: gpio
+    id: net_led_output
+    pin: GPIO4
+  - platform: gpio
+    id: srv_led_output
+    pin: GPIO0
+
+light:
+  - platform: binary
+    id: comm_led
+    output: comm_led_output
+  - platform: binary
+    id: net_led
+    output: net_led_output
+  - platform: binary
+    id: srv_led
+    output: srv_led_output
+
+switch:
+  - platform: gpio
+    id: keep_alive_switch
+    pin: GPIO13
