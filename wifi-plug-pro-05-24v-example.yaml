@@ -4,7 +4,7 @@ substitutions:
   name: wifi-plug-pro-05
   friendly_name: Wi-Fi Plug Pro-05
 
-esp32:
+esp8266:
   board: d1_mini
 
 packages:
