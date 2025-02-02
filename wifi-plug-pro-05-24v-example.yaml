@@ -1,7 +1,7 @@
 substitutions:
   inverter_maximum_power: "4500"
   version: "2"
-  name: dtu-wbs1-v001
+  name: wifi-plug-pro-05
   friendly_name: Wi-Fi Plug Pro-05
 
 esp32:
