@@ -33,6 +33,7 @@ ota:
 interval:
   - interval: 1s
     then:
+      - switch.toggle: keep_alive_switch
       - if:
           condition: wifi.connected
           then:
@@ -45,10 +46,6 @@ interval:
             - light.turn_on: net_led
             - delay: 500ms
             - light.turn_off: net_led
-
-  - interval: 1s
-    then:
-      switch.toggle: keep_alive_switch
 
 uart:
   - id: !extend inv_8851_uart

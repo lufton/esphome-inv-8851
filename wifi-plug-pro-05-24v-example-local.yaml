@@ -8,21 +8,16 @@ esp8266:
   board: d1_mini
 
 packages:
-  inv_8851:
-    url: https://github.com/lufton/esphome-inv-8851
-    ref: main
-    files:
-      - packages/core.yaml
-      - packages/inverter.yaml
-      - packages/grid.yaml
-      - packages/temperature.yaml
-      - packages/battery.yaml
-      - packages/battery-24v.yaml
-      # - packages/pv.yaml
-      # - packages/parallel.yaml
-      # - packages/bms-24v.yaml
-      - packages/wifi-plug-pro-05.yaml
-    refresh: 0s
+  core: !include packages/core-local.yaml
+  inverter: !include packages/inverter.yaml
+  grid: !include packages/grid.yaml
+  temperature: !include packages/temperature.yaml
+  battery: !include packages/battery.yaml
+  battery-24v: !include packages/battery-24v.yaml
+  # pv: !include packages/pv.yaml
+  # parallel: !include packages/parallel.yaml
+  # bms-24v: !include packages/bms-24v.yaml
+  wifi-plug-pro-05: !include packages/wifi-plug-pro-05.yaml
 
 wifi:
   ssid: !secret wifi_ssid
