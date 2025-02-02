@@ -74,10 +74,10 @@ output:
     pin: GPIO5
   - platform: gpio
     id: net_led_output
-    pin: GPIO4
+    pin: GPIO0
   - platform: gpio
     id: srv_led_output
-    pin: GPIO0
+    pin: GPIO4
 
 light:
   - platform: binary
