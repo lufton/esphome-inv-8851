@@ -17,7 +17,7 @@ packages:
   pv: !include packages/pv.yaml
   parallel: !include packages/parallel.yaml
   bms-48v: !include packages/bms-48v.yaml
-  dtu_wbs1_v001: !include packages/dtu_wbs1_v001.yaml
+  dtu-wbs1-v001: !include packages/dtu-wbs1-v001.yaml
 
 wifi:
   ssid: !secret wifi_ssid

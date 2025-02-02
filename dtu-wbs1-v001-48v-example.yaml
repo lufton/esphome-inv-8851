@@ -21,7 +21,7 @@ packages:
       # - packages/pv.yaml
       # - packages/parallel.yaml
       # - packages/bms-48v.yaml
-      - packages/dtu_wbs1_v001.yaml
+      - packages/dtu-wbs1-v001.yaml
     refresh: 0s
 
 wifi:

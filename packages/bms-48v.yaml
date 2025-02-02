@@ -1,27 +1,6 @@
+<<: !include bms-24v.yaml
 sensor:
   - platform: inv_8851
-    bms_battery_current:
-      name: "BMS battery current"
-    bms_battery_soc:
-      name: "BMS battery SOC"
-    bms_battery_voltage:
-      name: "BMS battery voltage"
-    bms_cell_01_voltage:
-      name: "BMS cell 01 voltage"
-    bms_cell_02_voltage:
-      name: "BMS cell 02 voltage"
-    bms_cell_03_voltage:
-      name: "BMS cell 03 voltage"
-    bms_cell_04_voltage:
-      name: "BMS cell 04 voltage"
-    bms_cell_05_voltage:
-      name: "BMS cell 05 voltage"
-    bms_cell_06_voltage:
-      name: "BMS cell 06 voltage"
-    bms_cell_07_voltage:
-      name: "BMS cell 07 voltage"
-    bms_cell_08_voltage:
-      name: "BMS cell 08 voltage"
     bms_cell_09_voltage:
       name: "BMS cell 09 voltage"
     bms_cell_10_voltage:

@@ -31,6 +31,49 @@ select:
 
 number:
   - platform: inv_8851
+    battery_back_to_util_voltage:
+      name: "Battery back to util voltage"
+      mode: box
+      min_value: ${battery_back_to_util_voltage_min}
+      max_value: ${battery_back_to_util_voltage_max}
+      step: 0.1
+    battery_bulk_voltage:
+      name: "Battery bulk voltage"
+      mode: box
+      min_value: ${battery_bulk_voltage_min}
+      max_value: ${battery_bulk_voltage_max}
+      step: 0.1
+    battery_float_voltage:
+      name: "Battery float voltage"
+      mode: box
+      min_value: ${battery_float_voltage_min}
+      max_value: ${battery_float_voltage_max}
+      step: 0.1
+    battery_cut_off_voltage:
+      name: "Battery cut-off voltage"
+      mode: box
+      min_value: ${battery_cut_off_voltage_min}
+      max_value: ${battery_cut_off_voltage_max}
+      step: 0.1
+    battery_equalization_voltage:
+      name: "Battery equalization voltage"
+      mode: box
+      min_value: ${battery_equalization_voltage_min}
+      max_value: ${battery_equalization_voltage_max}
+      step: 0.1
+    total_charge_current:
+      name: "Total charge current"
+      mode: box
+      min_value: 0
+      max_value: ${total_charge_current_max}
+      step: 0.1
+    util_charge_current:
+      name: "Util charge current"
+      mode: box
+      min_value: 0
+      max_value: ${util_charge_current_max}
+      step: 0.1
+  - platform: inv_8851
     battery_charge_cut_off_current:
       name: "Battery charge cut-off current"
       mode: box

@@ -1,11 +1,12 @@
 substitutions:
+  name: wifi-plug-pro-05
+  friendly_name: Wi-Fi Plug Pro-05
   inverter_maximum_power: "4500"
-  version: "2"
-  name: dtu-wbs1-v001
-  friendly_name: DTU WBS1-V001
+  version: "2" # this should be 1 for older revisions and 2 for newer, try different if you see message in the logs
+  voltage: "24" # this could be 24 or 48
 
-esp32:
-  board: esp32-c3-devkitm-1
+esp8266:
+  board: d1_mini
 
 packages:
   inv_8851:
@@ -21,7 +22,7 @@ packages:
       # - packages/pv.yaml
       # - packages/parallel.yaml
       # - packages/bms-24v.yaml
-      - packages/dtu-wbs1-v001.yaml
+      - packages/wifi-plug-pro-05.yaml
     refresh: 0s
 
 wifi:
@@ -39,3 +40,19 @@ api:
 ota:
   - platform: esphome
     password: !secret ota_password
+
+interval:
+  interval: 1s
+  then:
+    if:
+      condition: api.connected # mqtt.connected
+      then:
+        if:
+          condition:
+            light.is_off: srv_led
+          then:
+            light.turn_on: srv_led
+      else:
+        - light.turn_on: srv_led
+        - delay: 500ms
+        - light.turn_off: srv_led

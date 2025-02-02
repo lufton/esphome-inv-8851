@@ -1,44 +1,15 @@
-number:
-  - platform: inv_8851
-    battery_back_to_util_voltage:
-      name: "Battery back to util voltage"
-      mode: box
-      min_value: 40
-      max_value: 58.4
-      step: 0.1
-    battery_bulk_voltage:
-      name: "Battery bulk voltage"
-      mode: box
-      min_value: 48
-      max_value: 58.4
-      step: 0.1
-    battery_float_voltage:
-      name: "Battery float voltage"
-      mode: box
-      min_value: 48
-      max_value: 58.4
-      step: 0.1
-    battery_cut_off_voltage:
-      name: "Battery cut-off voltage"
-      mode: box
-      min_value: 40
-      max_value: 48
-      step: 0.1
-    battery_equalization_voltage:
-      name: "Battery equalization voltage"
-      mode: box
-      min_value: 50
-      max_value: 59
-      step: 0.1
-    total_charge_current:
-      name: "Total charge current"
-      mode: box
-      min_value: 0
-      max_value: 130
-      step: 0.1
-    util_charge_current:
-      name: "Util charge current"
-      mode: box
-      min_value: 0
-      max_value: 110
-      step: 0.1
+substitutions:
+  battery_back_to_util_voltage_min: "40"
+  battery_back_to_util_voltage_max: "58.4"
+  battery_bulk_voltage_min: "48"
+  battery_bulk_voltage_max: "58.4"
+  battery_float_voltage_min: "48"
+  battery_float_voltage_max: "58.4"
+  battery_cut_off_voltage_min: "40"
+  battery_cut_off_voltage_max: "48"
+  battery_equalization_voltage_min: "50"
+  battery_equalization_voltage_max: "59"
+  total_charge_current_max: "130"
+  util_charge_current_max: "110"
+
+<<: !include battery.yaml
