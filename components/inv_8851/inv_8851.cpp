@@ -232,6 +232,9 @@ void Inv8851::update() {
 
 void Inv8851::dump_config() {
   ESP_LOGCONFIG(TAG, "INV_8851:");
+  #ifdef INV8851_MODEL_SUMRY_HGX
+    ESP_LOGCONFIG(TAG, "  Model: SUMRY HGX (grid current, battery type and battery equalization not used)");
+  #endif
   #ifdef USE_BINARY_SENSOR
     LOG_BINARY_SENSOR("", "Battery connected", this->battery_binary_sensor_);
     LOG_BINARY_SENSOR("", "Buck topology initialization", this->buck_topology_initialization_binary_sensor_);
@@ -415,7 +418,11 @@ void Inv8851::publish_state_(const uint8_t *resp) {
     PUBLISH_STATE(this->bus_voltage_sensor_, state->bus_voltage / 10.0f);
     PUBLISH_STATE(this->fan1_speed_percentage_sensor_, state->fan1_speed_percent);
     PUBLISH_STATE(this->fan2_speed_percentage_sensor_, state->fan2_speed_percent);
-    PUBLISH_STATE(this->grid_current_sensor_, state->grid_current / 100.0f);
+    #ifndef INV8851_MODEL_SUMRY_HGX
+      // On a SUMRY HGX this word is not utility current: it reads 0.00 while
+      // mains carries the load and rises with PV instead.
+      PUBLISH_STATE(this->grid_current_sensor_, state->grid_current / 100.0f);
+    #endif
     PUBLISH_STATE(this->grid_frequency_sensor_, state->grid_freq / 100.0f);
     PUBLISH_STATE(this->grid_voltage_sensor_, state->grid_voltage / 10.0f);
     PUBLISH_STATE(this->inverter_apparent_power_sensor_, state->inv_va);
@@ -449,8 +456,12 @@ void Inv8851::publish_config_(const uint8_t *resp) {
   #ifdef USE_SELECT
     PUBLISH_OPTION(this->auto_return_select_, off_on_options, config->auto_return_to_default_screen);
     PUBLISH_OPTION(this->backlight_select_, off_on_options, config->backlight_on);
-    PUBLISH_OPTION(this->battery_equalization_select_, off_on_options, config->battery_equalization);
-    PUBLISH_OPTION(this->battery_type_select_, battery_type_options, config->battery_type);
+    #ifndef INV8851_MODEL_SUMRY_HGX
+      // On a SUMRY HGX these do not hold the battery type or the equalization
+      // switch (the panel disagrees with both); see set_select_value.
+      PUBLISH_OPTION(this->battery_equalization_select_, off_on_options, config->battery_equalization);
+      PUBLISH_OPTION(this->battery_type_select_, battery_type_options, config->battery_type);
+    #endif
     PUBLISH_OPTION(this->buzzer_select_, off_on_options, config->alarm_control);
     PUBLISH_OPTION(this->charge_energy_priority_select_, charge_energy_priority_options, config->charge_energy_priority);
     PUBLISH_OPTION(this->fault_record_select_, off_on_options, config->fault_record_enable);
@@ -486,6 +497,15 @@ void Inv8851::publish_config_(const uint8_t *resp) {
 }
 
 void Inv8851::set_select_value(const std::string type, size_t index) {
+  #ifdef INV8851_MODEL_SUMRY_HGX
+    // Writing these on a SUMRY HGX does not change the battery type or the
+    // equalization switch; it sets other, unidentified bits. Battery type is
+    // set from the inverter's panel (menu 05).
+    if (type == "battery_type" || type == "battery_equalization") {
+      ESP_LOGW(TAG, "%s is not writable on a SUMRY HGX; set it from the inverter's panel", type.c_str());
+      return;
+    }
+  #endif
   if (type == "auto_return") this->config_.auto_return_to_default_screen = index;
   else if (type == "backlight") this->config_.backlight_on = index;
   else if (type == "battery_equalization") this->config_.battery_equalization = index;
