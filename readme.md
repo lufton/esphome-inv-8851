@@ -17,6 +17,7 @@ By using this project, you acknowledge and agree to these terms. If you do not a
 
 * PowMr POW-HVM6.5K-48V (tested by [@lufton](https://github.com/lufton))
 * PowMr POW-HVM4.5K-24V
+* SUMRY HGX 4kW 24V/120V, with `model: sumry_hgx` (see [Options](#options))
 * Simular inverters that utilize the same DTU (WBS1-V001)
 
 ## Capabilities
@@ -56,6 +57,7 @@ There are several options you may need to set:
 
 * `update_interval`
 * `version`
+* `model`
 
 `update_interval` tells how often to request state and configuration from inverter, default value is 5s and should suite most situations.
 
@@ -65,6 +67,19 @@ inv_8851:
 ```
 
 `version` should be one of `1` (confirmed firmware version: 0005) or `2` (confirmed firmware version: 8100). Right now there are several protocol versions. They are pretty similar except they have a bit different packets length. `144/90` bytes for version=1 and `148/94` bytes for version=2 (state and config data block length respectively). If you experience problems with changing parameters it could mean that you should try other value (you can use `substitutions→version` parameter). It's only my guess, but it looks like version 1 is not compatible with newer firmware, so try using version 2 for newer models. Also you should see warning messages in logs if you peaked wrong version.
+
+`model` is optional and defaults to `default`, which reads every field as before. Set it to `sumry_hgx` for a SUMRY HGX: three fields of the shared register map mean something else on that inverter, so the component stops using them.
+
+```yaml
+inv_8851:
+  version: 2
+  model: sumry_hgx
+```
+
+* `grid_current` is not published. On the HGX that word reads 0.00 A while mains carries the load and rises with PV output, so it is not utility current.
+* `battery_type` and `battery_equalization` are neither published nor writable. Their bits disagree with the inverter's panel (menu 05 and menu 33), and writing them sets other, unidentified bits instead. Set battery type and equalization from the panel.
+
+The evidence is in [leodesigner/powmr4500_comm#15](https://github.com/leodesigner/powmr4500_comm/issues/15) and [issue #38](https://github.com/lufton/esphome-inv-8851/issues/38).
 
 ## 24v vs 48v version
 

@@ -30,6 +30,26 @@ const char *output_energy_priority_options[] = { [SUB] = "PV > Grid > Battery", 
 const char *phase_options[] = { [A] = "A", [B] = "B", [C] = "C" };
 const char *run_mode_options[] = { [standby_mode] = "standby", [fault_mode] = "fault", [shutdown_mode] = "shutdown", [normal_mode] = "normal", [no_battery_mode] = "no_battery", [discharge_mode] = "discharge", [parallel_discharge] = "parallel_disc", [bypass_mode] = "bypass", [charge_mode] = "charge", [grid_discharge_mode] = "grid_discharge", [micro_grid_discharge_mode] = "micro_grid_discharge" };
 
+// The option tables are indexed straight from the inverter's bytes. A value
+// outside a table -- a firmware that uses the field differently -- must not
+// read past its end: that published whatever string sat next in memory (e.g.
+// "Invalid option 50Hz" for battery equalization on a SUMRY HGX).
+template<size_t N> static const char *option_(const char *(&options)[N], uint32_t index) {
+  return index < N ? options[index] : nullptr;
+}
+
+#define PUBLISH_OPTION(entity, options, value) \
+  if (entity != nullptr) { \
+    const uint32_t option_index = (value); \
+    const char *option = option_(options, option_index); \
+    if (option != nullptr) { \
+      entity->publish_state(option); \
+    } else { \
+      ESP_LOGW(TAG, "%s: value %" PRIu32 " is outside its %u options; not published", \
+               entity->get_name().c_str(), option_index, (unsigned) (sizeof(options) / sizeof(options[0]))); \
+    } \
+  }
+
 void Inv8851::clear_buffer_() {
   while (this->available()) this->read();
   this->last_read_ = millis();
@@ -212,6 +232,9 @@ void Inv8851::update() {
 
 void Inv8851::dump_config() {
   ESP_LOGCONFIG(TAG, "INV_8851:");
+  #ifdef INV8851_MODEL_SUMRY_HGX
+    ESP_LOGCONFIG(TAG, "  Model: SUMRY HGX (grid current, battery type and battery equalization not used)");
+  #endif
   #ifdef USE_BINARY_SENSOR
     LOG_BINARY_SENSOR("", "Battery connected", this->battery_binary_sensor_);
     LOG_BINARY_SENSOR("", "Buck topology initialization", this->buck_topology_initialization_binary_sensor_);
@@ -363,10 +386,10 @@ void Inv8851::publish_state_(const uint8_t *resp) {
   #endif
 
   #ifdef USE_TEXT_SENSOR
-    PUBLISH_STATE(this->buck_topology_text_sensor_, run_mode_options[state->buck_topology]);
-    PUBLISH_STATE(this->inverter_topology_text_sensor_, run_mode_options[state->inverter_topology]);
-    PUBLISH_STATE(this->llc_topology_text_sensor_, run_mode_options[state->llc_topology]);
-    PUBLISH_STATE(this->pv_topology_text_sensor_, run_mode_options[state->pv_topology]);
+    PUBLISH_OPTION(this->buck_topology_text_sensor_, run_mode_options, state->buck_topology);
+    PUBLISH_OPTION(this->inverter_topology_text_sensor_, run_mode_options, state->inverter_topology);
+    PUBLISH_OPTION(this->llc_topology_text_sensor_, run_mode_options, state->llc_topology);
+    PUBLISH_OPTION(this->pv_topology_text_sensor_, run_mode_options, state->pv_topology);
   #endif
 
   #ifdef USE_SENSOR
@@ -395,7 +418,11 @@ void Inv8851::publish_state_(const uint8_t *resp) {
     PUBLISH_STATE(this->bus_voltage_sensor_, state->bus_voltage / 10.0f);
     PUBLISH_STATE(this->fan1_speed_percentage_sensor_, state->fan1_speed_percent);
     PUBLISH_STATE(this->fan2_speed_percentage_sensor_, state->fan2_speed_percent);
-    PUBLISH_STATE(this->grid_current_sensor_, state->grid_current / 100.0f);
+    #ifndef INV8851_MODEL_SUMRY_HGX
+      // On a SUMRY HGX this word is not utility current: it reads 0.00 while
+      // mains carries the load and rises with PV instead.
+      PUBLISH_STATE(this->grid_current_sensor_, state->grid_current / 100.0f);
+    #endif
     PUBLISH_STATE(this->grid_frequency_sensor_, state->grid_freq / 100.0f);
     PUBLISH_STATE(this->grid_voltage_sensor_, state->grid_voltage / 10.0f);
     PUBLISH_STATE(this->inverter_apparent_power_sensor_, state->inv_va);
@@ -427,24 +454,28 @@ void Inv8851::publish_config_(const uint8_t *resp) {
   memcpy(&this->config_, resp, inv8851_config_pkt_len);
   inv8851_config_s *config = (inv8851_config_s *) resp;
   #ifdef USE_SELECT
-    PUBLISH_STATE(this->auto_return_select_, off_on_options[config->auto_return_to_default_screen]);
-    PUBLISH_STATE(this->backlight_select_, off_on_options[config->backlight_on]);
-    PUBLISH_STATE(this->battery_equalization_select_, off_on_options[config->battery_equalization]);
-    PUBLISH_STATE(this->battery_type_select_, battery_type_options[config->battery_type]);
-    PUBLISH_STATE(this->buzzer_select_, off_on_options[config->alarm_control]);
-    PUBLISH_STATE(this->charge_energy_priority_select_, charge_energy_priority_options[config->charge_energy_priority]);
-    PUBLISH_STATE(this->fault_record_select_, off_on_options[config->fault_record_enable]);
-    PUBLISH_STATE(this->frequency_select_, frequency_options[config->frequency]);
-    PUBLISH_STATE(this->grid_voltage_range_select_, grid_voltage_range_options[config->grid_voltage_range]);
-    PUBLISH_STATE(this->on_grid_select_, off_on_options[config->grid_enable]);
-    PUBLISH_STATE(this->output_energy_priority_select_, output_energy_priority_options[config->output_energy_priority]);
-    PUBLISH_STATE(this->overload_restart_select_, off_on_options[config->output_OPP_auto_restart]);
-    PUBLISH_STATE(this->overtemp_restart_select_, off_on_options[config->otp_auto_restart]);
-    PUBLISH_STATE(this->parallel_operation_select_, off_on_options[config->parallel_operation]);
-    PUBLISH_STATE(this->phase_select_, phase_options[config->phase]);
-    PUBLISH_STATE(this->power_buzzer_select_, off_on_options[config->energy_interrupt_buzzer_on]);
-    PUBLISH_STATE(this->powersave_mode_select_, off_on_options[config->powersave_on]);
-    PUBLISH_STATE(this->warning_buzer_select_, off_on_options[config->warning_flag_buzer_on]);
+    PUBLISH_OPTION(this->auto_return_select_, off_on_options, config->auto_return_to_default_screen);
+    PUBLISH_OPTION(this->backlight_select_, off_on_options, config->backlight_on);
+    #ifndef INV8851_MODEL_SUMRY_HGX
+      // On a SUMRY HGX these do not hold the battery type or the equalization
+      // switch (the panel disagrees with both); see set_select_value.
+      PUBLISH_OPTION(this->battery_equalization_select_, off_on_options, config->battery_equalization);
+      PUBLISH_OPTION(this->battery_type_select_, battery_type_options, config->battery_type);
+    #endif
+    PUBLISH_OPTION(this->buzzer_select_, off_on_options, config->alarm_control);
+    PUBLISH_OPTION(this->charge_energy_priority_select_, charge_energy_priority_options, config->charge_energy_priority);
+    PUBLISH_OPTION(this->fault_record_select_, off_on_options, config->fault_record_enable);
+    PUBLISH_OPTION(this->frequency_select_, frequency_options, config->frequency);
+    PUBLISH_OPTION(this->grid_voltage_range_select_, grid_voltage_range_options, config->grid_voltage_range);
+    PUBLISH_OPTION(this->on_grid_select_, off_on_options, config->grid_enable);
+    PUBLISH_OPTION(this->output_energy_priority_select_, output_energy_priority_options, config->output_energy_priority);
+    PUBLISH_OPTION(this->overload_restart_select_, off_on_options, config->output_OPP_auto_restart);
+    PUBLISH_OPTION(this->overtemp_restart_select_, off_on_options, config->otp_auto_restart);
+    PUBLISH_OPTION(this->parallel_operation_select_, off_on_options, config->parallel_operation);
+    PUBLISH_OPTION(this->phase_select_, phase_options, config->phase);
+    PUBLISH_OPTION(this->power_buzzer_select_, off_on_options, config->energy_interrupt_buzzer_on);
+    PUBLISH_OPTION(this->powersave_mode_select_, off_on_options, config->powersave_on);
+    PUBLISH_OPTION(this->warning_buzer_select_, off_on_options, config->warning_flag_buzer_on);
   #endif
 
   #ifdef USE_NUMBER
@@ -466,6 +497,15 @@ void Inv8851::publish_config_(const uint8_t *resp) {
 }
 
 void Inv8851::set_select_value(const std::string type, size_t index) {
+  #ifdef INV8851_MODEL_SUMRY_HGX
+    // Writing these on a SUMRY HGX does not change the battery type or the
+    // equalization switch; it sets other, unidentified bits. Battery type is
+    // set from the inverter's panel (menu 05).
+    if (type == "battery_type" || type == "battery_equalization") {
+      ESP_LOGW(TAG, "%s is not writable on a SUMRY HGX; set it from the inverter's panel", type.c_str());
+      return;
+    }
+  #endif
   if (type == "auto_return") this->config_.auto_return_to_default_screen = index;
   else if (type == "backlight") this->config_.backlight_on = index;
   else if (type == "battery_equalization") this->config_.battery_equalization = index;

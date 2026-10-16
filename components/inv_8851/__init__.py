@@ -8,7 +8,10 @@ DEPENDENCIES = ["uart"]
 CODEOWNERS = ["@lufton"]
 
 CONF_INV_8851_ID = "inv_8851_id"
+CONF_MODEL = "model"
 ALLOWED_VERSIONS = [1, 2]
+# "default" keeps the register map exactly as it has always been read.
+ALLOWED_MODELS = ["default", "sumry_hgx"]
 
 inv_8851_ns = cg.esphome_ns.namespace("inv_8851")
 Inv8851 = inv_8851_ns.class_("Inv8851", cg.PollingComponent, uart.UARTDevice)
@@ -17,7 +20,8 @@ CONFIG_SCHEMA = (
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(Inv8851),
-            cv.Required(CONF_VERSION): vol.All(vol.Coerce(int), vol.In(ALLOWED_VERSIONS))
+            cv.Required(CONF_VERSION): vol.All(vol.Coerce(int), vol.In(ALLOWED_VERSIONS)),
+            cv.Optional(CONF_MODEL, default="default"): cv.one_of(*ALLOWED_MODELS, lower=True),
         }
     )
     .extend(cv.polling_component_schema("5s"))
@@ -26,6 +30,8 @@ CONFIG_SCHEMA = (
 
 async def to_code(config):
     cg.add_define("INV8851_VERSION", config[CONF_VERSION])
+    if config[CONF_MODEL] == "sumry_hgx":
+        cg.add_define("INV8851_MODEL_SUMRY_HGX")
     var = cg.new_Pvariable(config.get(CONF_ID))
     await cg.register_component(var, config)
     await uart.register_uart_device(var, config)
