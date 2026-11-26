@@ -212,7 +212,9 @@ void Inv8851::loop() {
     );
   auto data = this->read_data_(data_size.value());
   if (!data.has_value()) return this->clear_buffer_();
-  uint8_t *packet = new uint8_t[header_size + data_size.value()];
+  // A raw new[] here was never freed and leaked on every packet
+  std::vector<uint8_t> packet_buf(header_size + data_size.value());
+  uint8_t *packet = packet_buf.data();
   uint8_t offset = 0;
   std::memcpy(packet + offset, inv8851_protocol, protocol_size); offset += protocol_size;
   std::memcpy(packet + offset, read_command, command_size); offset += command_size;
